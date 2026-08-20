@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-08-20T00:00:00.000Z",
+  "league_id": "1389372609086382080",
+  "season": "2026",
+  "draft_id": "1389372609103142912",
+  "draft_status": "drafting",
+  "grades": [
+    {
+      "roster_id": 1,
+      "manager_name": "DamardiacArrest_02",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 2,
+      "manager_name": "rorydeane",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 3,
+      "manager_name": "cilliandeane",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 4,
+      "manager_name": "seanjordan44",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 5,
+      "manager_name": "roryosullivann",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 6,
+      "manager_name": "gorgz123",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 7,
+      "manager_name": "Patrickchess",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 8,
+      "manager_name": "LiamCotter",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 9,
+      "manager_name": "billynev02",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    },
+    {
+      "roster_id": 10,
+      "manager_name": "SeanMyers",
+      "grade": "C",
+      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
+      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
+      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+    }
+  ]
+}

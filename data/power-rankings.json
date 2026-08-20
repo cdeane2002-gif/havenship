@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-08-20T00:00:00.000Z",
+  "league_id": "1389372609086382080",
+  "season": "2026",
+  "basis": "preseason_draft",
+  "rankings": [
+    {
+      "rank": 1,
+      "roster_id": 1,
+      "manager_name": "DamardiacArrest_02",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 2,
+      "roster_id": 2,
+      "manager_name": "rorydeane",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 3,
+      "roster_id": 3,
+      "manager_name": "cilliandeane",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 4,
+      "roster_id": 4,
+      "manager_name": "seanjordan44",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 5,
+      "roster_id": 5,
+      "manager_name": "roryosullivann",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 6,
+      "roster_id": 6,
+      "manager_name": "gorgz123",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 7,
+      "roster_id": 7,
+      "manager_name": "Patrickchess",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 8,
+      "roster_id": 8,
+      "manager_name": "LiamCotter",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 9,
+      "roster_id": 9,
+      "manager_name": "billynev02",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    },
+    {
+      "rank": 10,
+      "roster_id": 10,
+      "manager_name": "SeanMyers",
+      "blurb": "Placeholder data — run `npm run rankings:generate` (with a funded Anthropic API key) to generate real power rankings. This entry exists only so the page renders correctly.",
+      "movement_note": null
+    }
+  ]
+}
