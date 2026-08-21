@@ -21,7 +21,7 @@ export default async function RulesPage() {
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-400">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -44,7 +44,7 @@ export default async function RulesPage() {
       <header className="mb-8">
         <p className="text-sm font-medium text-emerald-400">{league.name}</p>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Rules &amp; Scoring</h1>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-neutral-300">
           Pulled straight from the league&apos;s live settings on Sleeper.
         </p>
       </header>
@@ -52,7 +52,7 @@ export default async function RulesPage() {
       {/* Roster format */}
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold">Roster Format</h2>
-        <p className="mb-3 text-sm text-neutral-400">
+        <p className="mb-3 text-sm text-neutral-300">
           {totalStarters} starters, {bench?.count ?? 0} bench spots — {league.roster_positions.length} total.
         </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -67,7 +67,7 @@ export default async function RulesPage() {
           ))}
           {bench && (
             <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2.5">
-              <div className="text-lg font-bold text-neutral-500">{bench.count}×</div>
+              <div className="text-lg font-bold text-neutral-400">{bench.count}×</div>
               <div className="text-sm text-neutral-300">{bench.label}</div>
             </div>
           )}
@@ -83,7 +83,7 @@ export default async function RulesPage() {
             if (value === undefined) return null;
             return (
               <div key={key}>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500">{label}</dt>
+                <dt className="text-xs uppercase tracking-wide text-neutral-400">{label}</dt>
                 <dd className="text-sm font-medium text-neutral-200">{format(value)}</dd>
               </div>
             );
@@ -94,14 +94,14 @@ export default async function RulesPage() {
       {/* Scoring matrix */}
       <section className="mb-8">
         <h2 className="mb-1 text-lg font-semibold">Scoring</h2>
-        <p className="mb-3 text-sm text-neutral-400">
+        <p className="mb-3 text-sm text-neutral-300">
           Points awarded per stat, by position. Blank means that stat isn&apos;t scored for that
           position.
         </p>
         <div className="overflow-x-auto rounded-lg border border-neutral-800">
           <table className="w-full min-w-[420px] text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500">
+              <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-400">
                 <th className="px-3 py-2 font-medium">Stat</th>
                 {POSITION_ORDER.map((pos) => (
                   <th key={pos} className="px-3 py-2 text-right font-medium">
@@ -119,7 +119,7 @@ export default async function RulesPage() {
                     <tr className="bg-neutral-900/70">
                       <td
                         colSpan={POSITION_ORDER.length + 1}
-                        className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-neutral-500"
+                        className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-neutral-300"
                       >
                         {category}
                       </td>
@@ -142,7 +142,7 @@ export default async function RulesPage() {
                                   ? "text-rose-400"
                                   : isPositive
                                     ? "text-emerald-400"
-                                    : "text-neutral-600"
+                                    : "text-neutral-400"
                               }`}
                             >
                               {formatPoints(value)}
@@ -162,8 +162,8 @@ export default async function RulesPage() {
       {/* Raw / unidentified settings */}
       {(rawScoringKeys.length > 0 || rawSettingsEntries.length > 0) && (
         <section>
-          <h2 className="mb-1 text-lg font-semibold text-neutral-400">Raw Settings</h2>
-          <p className="mb-3 text-sm text-neutral-500">
+          <h2 className="mb-1 text-lg font-semibold text-neutral-300">Raw Settings</h2>
+          <p className="mb-3 text-sm text-neutral-400">
             Sleeper&apos;s public API only documents NFL leagues, so a handful of settings keys
             here can&apos;t be confidently translated. Shown as-is rather than guessed at.
           </p>
@@ -173,7 +173,7 @@ export default async function RulesPage() {
                 {rawScoringKeys.map(({ key, value }) => (
                   <tr key={key} className="border-b border-neutral-800/60 last:border-0">
                     <td className="px-3 py-1.5 font-mono text-xs text-neutral-400">{key}</td>
-                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-500">
+                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-400">
                       {value}
                     </td>
                   </tr>
@@ -183,7 +183,7 @@ export default async function RulesPage() {
                     <td className="px-3 py-1.5 font-mono text-xs text-neutral-400">
                       settings.{key}
                     </td>
-                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-500">
+                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-400">
                       {String(value)}
                     </td>
                   </tr>

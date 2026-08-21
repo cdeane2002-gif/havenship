@@ -22,7 +22,7 @@ export default async function PowerRankingsPage() {
           {league?.season ?? rankings.season} Season
         </p>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Power Rankings</h1>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-neutral-300">
           {rankings.basis === "preseason_draft"
             ? "Preseason — based on draft value, since no gameweeks have been played yet."
             : "Based on recent form and results."}
@@ -36,7 +36,7 @@ export default async function PowerRankingsPage() {
             to fill this in.
           </p>
         ) : (
-          <p className="mt-2 text-xs text-neutral-500">
+          <p className="mt-2 text-xs text-neutral-400">
             Generated {new Date(rankings.generated_at).toLocaleDateString()}
           </p>
         )}
@@ -65,12 +65,12 @@ export default async function PowerRankingsPage() {
                 ) : null}
                 <span className="font-medium text-neutral-200">{entry.manager_name}</span>
                 {entry.movement_note ? (
-                  <span className="ml-auto shrink-0 rounded bg-neutral-800 px-2 py-0.5 text-[11px] text-neutral-400">
+                  <span className="ml-auto shrink-0 rounded bg-neutral-800 px-2 py-0.5 text-[11px] text-neutral-300">
                     {entry.movement_note}
                   </span>
                 ) : null}
               </div>
-              <p className="text-sm text-neutral-400">{entry.blurb}</p>
+              <p className="text-sm text-neutral-300">{entry.blurb}</p>
             </li>
           );
         })}

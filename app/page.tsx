@@ -58,7 +58,7 @@ function streakBadge(streak: string | null) {
     ? "bg-emerald-500/15 text-emerald-400"
     : isLoss
       ? "bg-rose-500/15 text-rose-400"
-      : "bg-neutral-500/15 text-neutral-400";
+      : "bg-neutral-500/15 text-neutral-300";
   return (
     <span className={`inline-block rounded px-1.5 py-0.5 text-[11px] font-semibold ${color}`}>
       {streak}
@@ -75,7 +75,7 @@ export default async function StandingsPage() {
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-400">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -103,7 +103,7 @@ export default async function StandingsPage() {
       )}
 
       {!isDrafting && !seasonHasStarted && (
-        <div className="mb-6 rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-sm text-neutral-400">
+        <div className="mb-6 rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-sm text-neutral-300">
           No games played yet this season. Every team starts level.
         </div>
       )}
@@ -111,7 +111,7 @@ export default async function StandingsPage() {
       <div className="overflow-hidden rounded-lg border border-neutral-800">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500">
+            <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-400">
               <th className="px-3 py-2 font-medium">#</th>
               <th className="px-3 py-2 font-medium">Team</th>
               <th className="px-3 py-2 text-center font-medium">W-L-D</th>
@@ -129,7 +129,7 @@ export default async function StandingsPage() {
                   key={row.roster.roster_id}
                   className="border-b border-neutral-800/60 last:border-0 even:bg-neutral-900/30"
                 >
-                  <td className="px-3 py-3 text-neutral-500">{i + 1}</td>
+                  <td className="px-3 py-3 text-neutral-400">{i + 1}</td>
                   <td className="px-3 py-3">
                     <div className="flex items-center gap-2.5">
                       {avatarUrl ? (
@@ -153,7 +153,7 @@ export default async function StandingsPage() {
                   <td className="px-3 py-3 text-right tabular-nums text-neutral-300">
                     {row.pointsFor.toFixed(1)}
                   </td>
-                  <td className="hidden px-3 py-3 text-right tabular-nums text-neutral-400 sm:table-cell">
+                  <td className="hidden px-3 py-3 text-right tabular-nums text-neutral-300 sm:table-cell">
                     {row.pointsAgainst.toFixed(1)}
                   </td>
                   <td className="px-3 py-3 text-right">{streakBadge(row.streak)}</td>

@@ -26,7 +26,7 @@ export default async function RecordsPage() {
       <header className="mb-6">
         <p className="text-sm font-medium text-emerald-400">All-Time</p>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Records</h1>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-neutral-300">
           Across {seasons.length} season{seasons.length === 1 ? "" : "s"} of league history (
           {seasonLabels}).
         </p>
@@ -74,7 +74,7 @@ export default async function RecordsPage() {
           <div className="overflow-hidden rounded-lg border border-neutral-800">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500">
+                <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-400">
                   <th className="px-3 py-2 font-medium">Manager</th>
                   <th className="px-3 py-2 text-center font-medium">W-L-D</th>
                   <th className="px-3 py-2 text-right font-medium">Win %</th>
@@ -97,7 +97,7 @@ export default async function RecordsPage() {
                       <td className="px-3 py-3 text-right tabular-nums text-neutral-300">
                         {pct === "—" ? pct : `${pct}%`}
                       </td>
-                      <td className="px-3 py-3 text-right tabular-nums text-neutral-400">
+                      <td className="px-3 py-3 text-right tabular-nums text-neutral-300">
                         {c.seasonsPlayed}
                       </td>
                     </tr>
@@ -110,16 +110,16 @@ export default async function RecordsPage() {
       </section>
 
       <section>
-        <h2 className="mb-1 text-lg font-semibold text-neutral-400">Coming Soon</h2>
-        <p className="mb-3 text-sm text-neutral-500">
+        <h2 className="mb-1 text-lg font-semibold text-neutral-300">Coming Soon</h2>
+        <p className="mb-3 text-sm text-neutral-400">
           These need per-gameweek matchup data, which Sleeper&apos;s API isn&apos;t currently
           returning for this league (see step-0 probe notes). They&apos;ll appear here once that
           data is available.
         </p>
-        <ul className="space-y-1.5 text-sm text-neutral-500">
+        <ul className="space-y-1.5 text-sm text-neutral-400">
           {NOT_YET_AVAILABLE.map((label) => (
             <li key={label} className="flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-neutral-700" />
+              <span className="h-1 w-1 rounded-full bg-neutral-500" />
               {label}
             </li>
           ))}
@@ -131,7 +131,7 @@ export default async function RecordsPage() {
 
 function EmptyNote({ text }: { text: string }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-500">
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-400">
       {text}
     </div>
   );
@@ -149,10 +149,10 @@ function RankedList({
           key={item.key}
           className="flex items-center gap-3 border-b border-neutral-800/60 bg-neutral-900/30 px-3 py-2.5 text-sm last:border-0 even:bg-neutral-900/50"
         >
-          <span className="w-5 shrink-0 text-neutral-500">{item.rank}</span>
+          <span className="w-5 shrink-0 text-neutral-400">{item.rank}</span>
           <div className="min-w-0 flex-1">
             <div className="truncate font-medium text-neutral-200">{item.primary}</div>
-            <div className="text-xs text-neutral-500">{item.secondary}</div>
+            <div className="text-xs text-neutral-400">{item.secondary}</div>
           </div>
           <span className="shrink-0 tabular-nums font-semibold text-emerald-400">
             {item.value}

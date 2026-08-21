@@ -41,7 +41,7 @@ function PickCell({ pick, isOnTheClock }: { pick: SleeperDraftPick | undefined; 
         className={`flex h-16 w-32 shrink-0 flex-col items-center justify-center rounded border text-xs ${
           isOnTheClock
             ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300"
-            : "border-dashed border-neutral-800 text-neutral-700"
+            : "border-dashed border-neutral-800 text-neutral-500"
         }`}
       >
         {isOnTheClock ? "On the clock" : "—"}
@@ -57,12 +57,12 @@ function PickCell({ pick, isOnTheClock }: { pick: SleeperDraftPick | undefined; 
         <span className={`rounded px-1 text-[10px] font-semibold ${posColor}`}>
           {pick.metadata.position}
         </span>
-        <span className="text-[10px] text-neutral-600">#{pick.pick_no}</span>
+        <span className="text-[10px] text-neutral-400">#{pick.pick_no}</span>
       </div>
       <div className="truncate text-xs font-medium leading-tight text-neutral-200">
         {pick.metadata.first_name} {pick.metadata.last_name}
       </div>
-      <div className="text-[10px] text-neutral-500">{pick.metadata.team_abbr}</div>
+      <div className="text-[10px] text-neutral-400">{pick.metadata.team_abbr}</div>
     </div>
   );
 }
@@ -71,7 +71,7 @@ export default async function DraftPage() {
   const league = await getLeague(LEAGUE_ID);
   if (!league?.draft_id) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-400">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
         No draft found for this league yet.
       </div>
     );
@@ -85,7 +85,7 @@ export default async function DraftPage() {
 
   if (!draft) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-400">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
         Couldn&apos;t load draft details. Try again shortly.
       </div>
     );
@@ -128,7 +128,7 @@ export default async function DraftPage() {
       <header className="mb-6">
         <p className="text-sm font-medium text-emerald-400">{league.season} Season</p>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Draft</h1>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-neutral-300">
           {draft.type === "snake" ? "Snake draft" : draft.type} · {rounds} rounds · {teams} teams
           {draft.status === "drafting" && currentPickNo ? ` · pick ${currentPickNo} of ${rounds * teams}` : ""}
         </p>
@@ -139,7 +139,7 @@ export default async function DraftPage() {
         <div className="inline-block min-w-full">
           {/* Header row: team names per slot */}
           <div className="flex border-b border-neutral-800 bg-neutral-900">
-            <div className="flex h-12 w-10 shrink-0 items-center justify-center text-xs font-medium text-neutral-500">
+            <div className="flex h-12 w-10 shrink-0 items-center justify-center text-xs font-medium text-neutral-400">
               Rd
             </div>
             {slots.map((slot) => {
@@ -167,7 +167,7 @@ export default async function DraftPage() {
           {/* Rounds */}
           {Array.from({ length: rounds }, (_, i) => i + 1).map((round) => (
             <div key={round} className="flex border-b border-neutral-800/60 last:border-0">
-              <div className="flex w-10 shrink-0 items-center justify-center text-xs text-neutral-500">
+              <div className="flex w-10 shrink-0 items-center justify-center text-xs text-neutral-400">
                 {round}
               </div>
               {slots.map((slot) => {
@@ -194,7 +194,7 @@ export default async function DraftPage() {
           to fill this in.
         </p>
       ) : (
-        <p className="mb-4 text-sm text-neutral-400">
+        <p className="mb-4 text-sm text-neutral-300">
           Generated {new Date(draftGrades.generated_at).toLocaleDateString()} · AI-written, take
           it with a pinch of salt.
         </p>
@@ -225,17 +225,17 @@ export default async function DraftPage() {
                   {grade.grade}
                 </span>
               </div>
-              <p className="mb-3 text-sm text-neutral-400">{grade.summary}</p>
+              <p className="mb-3 text-sm text-neutral-300">{grade.summary}</p>
               <div className="space-y-1 text-xs">
                 <p>
                   <span className="font-semibold text-emerald-400">Best pick: </span>
                   <span className="text-neutral-300">{grade.best_pick.player_name}</span>
-                  <span className="text-neutral-500"> — {grade.best_pick.reason}</span>
+                  <span className="text-neutral-400"> — {grade.best_pick.reason}</span>
                 </p>
                 <p>
                   <span className="font-semibold text-rose-400">Worst pick: </span>
                   <span className="text-neutral-300">{grade.worst_pick.player_name}</span>
-                  <span className="text-neutral-500"> — {grade.worst_pick.reason}</span>
+                  <span className="text-neutral-400"> — {grade.worst_pick.reason}</span>
                 </p>
               </div>
             </div>
