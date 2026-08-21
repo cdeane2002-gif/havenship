@@ -195,8 +195,7 @@ export default async function DraftPage() {
         </p>
       ) : (
         <p className="mb-4 text-sm text-neutral-300">
-          Generated {new Date(draftGrades.generated_at).toLocaleDateString()} · AI-written, take
-          it with a pinch of salt.
+          Generated {new Date(draftGrades.generated_at).toLocaleDateString()}.
         </p>
       )}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
