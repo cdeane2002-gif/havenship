@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "grades:generate": "tsx --env-file=.env.local scripts/generate-draft-grades.ts",
-    "rankings:generate": "tsx --env-file=.env.local scripts/generate-power-rankings.ts"
+    "grades:generate": "tsx --env-file=.env.local scripts/generate-draft-grades.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",

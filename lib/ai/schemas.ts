@@ -34,26 +34,3 @@ export const DraftGradesFileSchema = z.object({
   grades: z.array(DraftGradeSchema),
 });
 export type DraftGradesFile = z.infer<typeof DraftGradesFileSchema>;
-
-export const PowerRankingEntrySchema = z.object({
-  rank: z.number().int().min(1),
-  roster_id: z.number(),
-  manager_name: z.string(),
-  blurb: z.string().min(1),
-  movement_note: z.string().nullable(),
-});
-export type PowerRankingEntry = z.infer<typeof PowerRankingEntrySchema>;
-
-export const PowerRankingsResponseSchema = z.object({
-  rankings: z.array(PowerRankingEntrySchema),
-});
-export type PowerRankingsResponse = z.infer<typeof PowerRankingsResponseSchema>;
-
-export const PowerRankingsFileSchema = z.object({
-  generated_at: z.string(),
-  league_id: z.string(),
-  season: z.string(),
-  basis: z.enum(["preseason_draft", "in_season_form"]),
-  rankings: z.array(PowerRankingEntrySchema),
-});
-export type PowerRankingsFile = z.infer<typeof PowerRankingsFileSchema>;

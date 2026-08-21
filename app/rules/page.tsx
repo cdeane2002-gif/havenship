@@ -32,12 +32,7 @@ export default async function RulesPage() {
   const bench = rosterSlots.find((s) => s.slot === "BN");
   const totalStarters = starters.reduce((sum, s) => sum + s.count, 0);
 
-  const { rows: scoringRows, rawKeys: rawScoringKeys } = buildScoringMatrix(league.scoring_settings);
-
-  const knownSettingsKeys = new Set(LEAGUE_SETTING_LABELS.map((s) => s.key));
-  const rawSettingsEntries = Object.entries(league.settings)
-    .filter(([key]) => !knownSettingsKeys.has(key))
-    .sort(([a], [b]) => a.localeCompare(b));
+  const { rows: scoringRows } = buildScoringMatrix(league.scoring_settings);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
@@ -158,41 +153,6 @@ export default async function RulesPage() {
           </table>
         </div>
       </section>
-
-      {/* Raw / unidentified settings */}
-      {(rawScoringKeys.length > 0 || rawSettingsEntries.length > 0) && (
-        <section>
-          <h2 className="mb-1 text-lg font-semibold text-neutral-300">Raw Settings</h2>
-          <p className="mb-3 text-sm text-neutral-400">
-            Sleeper&apos;s public API only documents NFL leagues, so a handful of settings keys
-            here can&apos;t be confidently translated. Shown as-is rather than guessed at.
-          </p>
-          <div className="overflow-x-auto rounded-lg border border-neutral-800">
-            <table className="w-full min-w-[280px] text-sm">
-              <tbody>
-                {rawScoringKeys.map(({ key, value }) => (
-                  <tr key={key} className="border-b border-neutral-800/60 last:border-0">
-                    <td className="px-3 py-1.5 font-mono text-xs text-neutral-400">{key}</td>
-                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-400">
-                      {value}
-                    </td>
-                  </tr>
-                ))}
-                {rawSettingsEntries.map(([key, value]) => (
-                  <tr key={key} className="border-b border-neutral-800/60 last:border-0">
-                    <td className="px-3 py-1.5 font-mono text-xs text-neutral-400">
-                      settings.{key}
-                    </td>
-                    <td className="px-3 py-1.5 text-right tabular-nums text-neutral-400">
-                      {String(value)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
     </div>
   );
 }

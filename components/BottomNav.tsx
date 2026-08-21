@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Grows one entry per stage, in the build order: standings -> rules -> draft -> power rankings
-// -> records. Results is on hold pending live matchup data (see lib/sleeper.ts getMatchups).
+// Grows one entry per stage, in the build order: standings -> rules -> draft -> records.
+// Results is on hold pending live matchup data (see lib/sleeper.ts getMatchups).
 const NAV_ITEMS = [
   { href: "/", label: "Standings", icon: "🏆" },
   { href: "/rules", label: "Rules", icon: "📋" },
   { href: "/draft", label: "Draft", icon: "🎯" },
-  { href: "/power-rankings", label: "Rankings", icon: "📈" },
   { href: "/records", label: "Records", icon: "📚" },
 ];
 
