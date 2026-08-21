@@ -1,89 +1,149 @@
 {
-  "generated_at": "2026-08-20T00:00:00.000Z",
+  "generated_at": "2026-08-21T00:00:00.000Z",
   "league_id": "1389372609086382080",
   "season": "2026",
   "draft_id": "1389372609103142912",
-  "draft_status": "drafting",
+  "draft_status": "complete",
   "grades": [
     {
-      "roster_id": 1,
-      "manager_name": "DamardiacArrest_02",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 2,
-      "manager_name": "rorydeane",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 3,
-      "manager_name": "cilliandeane",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 4,
-      "manager_name": "seanjordan44",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 5,
-      "manager_name": "roryosullivann",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 6,
-      "manager_name": "gorgz123",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
-    },
-    {
-      "roster_id": 7,
-      "manager_name": "Patrickchess",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+      "roster_id": 9,
+      "manager_name": "billynev02",
+      "grade": "A+",
+      "summary": "Billy put together a seriously impressive draft. Florian Wirtz and Elliot Anderson gave him a strong start, but the real strength was finding excellent players in the middle and later rounds. Daniel Muñoz, Djordje Petrovic, Ian Maatsen and Joe Willock all look like fantastic picks for where they were taken. There are a couple of questionable decisions, particularly taking William Saliba quite early and Kai Havertz before some other options were gone, but overall this is probably the deepest and most complete squad in the draft. A really strong draft from start to finish.",
+      "best_pick": {
+        "player_name": "Djordje Petrovic",
+        "reason": "A fantastic goalkeeper to get that late."
+      },
+      "worst_pick": {
+        "player_name": "William Saliba",
+        "reason": "Felt a little early compared with the other options available."
+      }
     },
     {
       "roster_id": 8,
       "manager_name": "LiamCotter",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+      "grade": "A+",
+      "summary": "Liam's draft is absolutely stacked with players who look like they could outperform their draft position. Rayan Cherki, Benjamin Sesko and Enzo Fernández gave him a strong foundation, before he found some brilliant value in Emiliano Martínez, Micky van de Ven, Lewis Hall and Antonee Robinson. The defensive options in particular are excellent. The main concern is the number of reaches towards the end, with Rashford, Harvey Barnes and especially Nicolas Jackson all being taken earlier than expected. But the quality of the core of this team is hard to ignore. One of the strongest squads in the league.",
+      "best_pick": {
+        "player_name": "Antonee Robinson",
+        "reason": "An excellent defender to get that late."
+      },
+      "worst_pick": {
+        "player_name": "Nicolas Jackson",
+        "reason": "A very optimistic pick that late in the draft."
+      }
     },
     {
-      "roster_id": 9,
-      "manager_name": "billynev02",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+      "roster_id": 1,
+      "manager_name": "ConorDeane",
+      "grade": "A",
+      "summary": "Starting with Erling Haaland is obviously a great way to begin a draft, but this team deserves credit for what came afterwards. Alex Iwobi, Tyrick Mitchell, Chris Richards, Lisandro Martínez and Michael Kayode were all excellent picks considering where they were taken. There's a particularly impressive group of defenders here, and the squad has a lot of depth. The main issue is that Hugo Ekitiké and Brennan Johnson were both taken quite aggressively late on. Still, having Haaland at the top of the team and then finding so many useful players later makes this one of the strongest drafts overall.",
+      "best_pick": {
+        "player_name": "Tyrick Mitchell",
+        "reason": "An outstanding late defensive pick."
+      },
+      "worst_pick": {
+        "player_name": "Hugo Ekitiké",
+        "reason": "Probably taken considerably earlier than necessary."
+      }
     },
     {
       "roster_id": 10,
       "manager_name": "SeanMyers",
-      "grade": "C",
-      "summary": "Placeholder data — run `npm run grades:generate` (with a funded Anthropic API key) to generate real grades. This entry exists only so the page renders correctly.",
-      "best_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." },
-      "worst_pick": { "player_name": "TBD", "reason": "Placeholder — not a real grade yet." }
+      "grade": "A",
+      "summary": "Sean quietly had one of the best drafts of the group. Jérémy Doku and Declan Rice are a very solid opening pair, and the draft then got better as it went on. James Tarkowski, Dominic Calvert-Lewin, Brian Brobbey, Pascal Groß and Donnarumma all look like good additions. The standout, however, was Luke Shaw, who was a fantastic pick that late. There are a few reaches towards the end, particularly Jaidon Anthony and Chris Wood, but the overall depth is excellent. A team that could look even better as the season develops.",
+      "best_pick": {
+        "player_name": "Luke Shaw",
+        "reason": "An absolute steal that late in the draft."
+      },
+      "worst_pick": {
+        "player_name": "Jaidon Anthony",
+        "reason": "A big gamble when there were probably safer options available."
+      }
+    },
+    {
+      "roster_id": 2,
+      "manager_name": "rorydeane",
+      "grade": "A-",
+      "summary": "Rory put together a very balanced squad. Antoine Semenyo, Morgan Rogers and Bryan Mbeumo give the team plenty of attacking potential, while Patrick Dorgu, Mikkel Damsgaard and James Hill were all very smart picks in the middle rounds. The goalkeeper position also looks particularly interesting with Senne Lammens. The main criticism is that there were quite a few players taken slightly earlier than expected, including Mbeumo, Dewsbury-Hall and Jacob Murphy. Nevertheless, there are some excellent late picks here, and this squad has a very high ceiling.",
+      "best_pick": {
+        "player_name": "Trai Hume",
+        "reason": "An excellent late-round defender."
+      },
+      "worst_pick": {
+        "player_name": "Jacob Murphy",
+        "reason": "Felt like a reach that late in the draft."
+      }
+    },
+    {
+      "roster_id": 3,
+      "manager_name": "cilliandeane",
+      "grade": "B+",
+      "summary": "Cillian went for quality at the top of the draft, with Cole Palmer and Alexander Isak forming a very exciting first two picks. Virgil van Dijk was also a great addition, and the defensive depth later in the draft is one of the team's biggest strengths. Dan Ballard, Jan Paul van Hecke and Malick Thiaw were all excellent picks. The problem is that there were quite a few players taken earlier than they probably needed to be, including James Maddison, Jurriën Timber and Richarlison. A strong team with some excellent players, but a few more questionable picks than the teams above.",
+      "best_pick": {
+        "player_name": "Dan Ballard",
+        "reason": "Excellent value in the later rounds."
+      },
+      "worst_pick": {
+        "player_name": "Jurriën Timber",
+        "reason": "Probably could have been left until much later."
+      }
+    },
+    {
+      "roster_id": 5,
+      "manager_name": "roryosullivann",
+      "grade": "B+",
+      "summary": "Rory's team has a lot to like. João Pedro and Igor Thiago give the attack plenty of potential, while Reece James was a particularly impressive pick early on. Marcus Tavernier, Marc Guéhi and Kevin Schade were also solid additions. The later rounds produced some fantastic finds, especially Matty Cash, Sean Steur and James Trafford. The downside is that there are a few players who were taken quite aggressively, particularly Christos Tzolis and Callum Hudson-Odoi. There's plenty of upside here, but also a few more risks than you'd ideally want.",
+      "best_pick": {
+        "player_name": "Matty Cash",
+        "reason": "An excellent defender to get that late."
+      },
+      "worst_pick": {
+        "player_name": "Callum Hudson-Odoi",
+        "reason": "Felt like a reach at that stage."
+      }
+    },
+    {
+      "roster_id": 4,
+      "manager_name": "seanjordan44",
+      "grade": "B+",
+      "summary": "Sean started with an excellent attacking core in Bukayo Saka, Morgan Gibbs-White and Cody Gakpo. The draft then produced some very good defensive picks, with Josko Gvardiol, Neco Williams and Ezri Konsa standing out. Kobbie Mainoo was another interesting selection with plenty of upside. The main problem is that Sean was willing to take some big risks, particularly with Savinho and Kaoru Mitoma. There's a lot of quality here, but the team may need a few of those riskier picks to really pay off.",
+      "best_pick": {
+        "player_name": "Neco Williams",
+        "reason": "A fantastic late defensive selection."
+      },
+      "worst_pick": {
+        "player_name": "Kaoru Mitoma",
+        "reason": "Probably the biggest reach on the team."
+      }
+    },
+    {
+      "roster_id": 6,
+      "manager_name": "gorgz123",
+      "grade": "B",
+      "summary": "Gorgz had a very interesting draft with some big swings. Bruno Fernandes, Ollie Watkins and Bruno Guimarães give the team a strong foundation, while Pedro Porro and the Arsenal defenders provide plenty of defensive quality. The later rounds were particularly good, with Granit Xhaka, Michael Keane, Ola Aina and Nick Pope all looking like smart additions. The problem is that there were quite a few aggressive picks earlier in the draft, including Eze, Buendía and Junior Kroupi. A team with plenty of potential, but perhaps a little too reliant on some of those gambles paying off.",
+      "best_pick": {
+        "player_name": "Ola Aina",
+        "reason": "One of the best late picks of the entire draft."
+      },
+      "worst_pick": {
+        "player_name": "Junior Kroupi",
+        "reason": "A very ambitious pick that late."
+      }
+    },
+    {
+      "roster_id": 7,
+      "manager_name": "Patrickchess",
+      "grade": "B",
+      "summary": "Patrick's draft has a lot of solid picks without quite having the same number of standout selections as some of the other teams. Dominik Szoboszlai and Matheus Cunha provide a good attacking foundation, while Gabriel Magalhães and David Raya give the team some defensive stability. The middle rounds were particularly strong, with Adrien Truffert, Sandro Tonali, Luka Vuskovic, Boubacar Kamara and Levi Colwill all looking like useful additions. The biggest issue was Omar Marmoush, who was taken very early compared with the other options available. A solid and well-rounded squad, but perhaps lacking that one extra layer of draft-day brilliance.",
+      "best_pick": {
+        "player_name": "Luka Vuskovic",
+        "reason": "An excellent defensive pick in the middle rounds."
+      },
+      "worst_pick": {
+        "player_name": "Omar Marmoush",
+        "reason": "A very ambitious selection that late in the draft."
+      }
     }
   ]
 }
