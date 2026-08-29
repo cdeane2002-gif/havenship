@@ -41,23 +41,29 @@ export interface SeasonPointsEntry {
   points: number;
 }
 
+/** One entry per manager (their single best season), not per roster-season — otherwise a
+ * manager who's had multiple good seasons crowds out everyone else on this leaderboard. */
 export function topSeasonPoints(seasons: SeasonRecordsData[], limit = 10): SeasonPointsEntry[] {
-  const entries: SeasonPointsEntry[] = [];
+  const bestByOwner = new Map<string, SeasonPointsEntry>();
   for (const s of seasons) {
     const usersById = new Map(s.users.map((u) => [u.user_id, u]));
     for (const r of s.rosters) {
       const points = rosterPointsFor(r);
       if (points <= 0) continue; // season not started / no games played for this roster yet
+      const ownerKey = r.owner_id ?? `roster-${s.season}-${r.roster_id}`;
       const user = r.owner_id ? usersById.get(r.owner_id) : null;
-      entries.push({
+      const entry: SeasonPointsEntry = {
         season: s.season,
         managerName: user ? teamNameForUser(user) : `Roster ${r.roster_id}`,
         points,
-      });
+      };
+      const existing = bestByOwner.get(ownerKey);
+      if (!existing || entry.points > existing.points) bestByOwner.set(ownerKey, entry);
     }
   }
-  entries.sort((a, b) => b.points - a.points);
-  return entries.slice(0, limit);
+  return Array.from(bestByOwner.values())
+    .sort((a, b) => b.points - a.points)
+    .slice(0, limit);
 }
 
 export interface CareerRecord {

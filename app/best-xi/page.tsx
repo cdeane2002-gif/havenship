@@ -52,6 +52,11 @@ export default async function BestXIPage({
     : getGameweekData(league.season, week);
   const slots = gameweek ? computeBestXI(gameweek.matchups.flatMap((m) => m.teams)) : [];
   const totalPoints = slots.reduce((sum, s) => sum + s.candidate.points, 0);
+  const topScorerId =
+    slots.length > 0
+      ? slots.reduce((best, s) => (s.candidate.points > best.candidate.points ? s : best)).candidate
+          .player_id
+      : null;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
@@ -61,7 +66,7 @@ export default async function BestXIPage({
         <p className="mt-1 text-sm text-neutral-300">
           The highest-scoring valid lineup across every manager&apos;s starters this gameweek —
           {" "}
-          {totalPoints.toFixed(1)} combined points.
+          {totalPoints.toFixed(2)} combined points.
         </p>
       </header>
 
@@ -98,18 +103,26 @@ export default async function BestXIPage({
       ) : (
         <div className="overflow-hidden rounded-lg border border-neutral-800">
           {slots.map((slot, i) => {
+            const isTopScorer = slot.candidate.player_id === topScorerId;
             return (
               <div
                 key={`${slot.slot}-${i}`}
-                className="flex items-center gap-3 border-b border-neutral-800/60 bg-neutral-900/30 px-4 py-3 last:border-0 even:bg-neutral-900/50"
+                className={`flex items-center gap-3 border-b border-neutral-800/60 px-4 py-3 last:border-0 ${
+                  isTopScorer ? "bg-amber-500/10" : "bg-neutral-900/30 even:bg-neutral-900/50"
+                }`}
               >
                 <span className="w-24 shrink-0 text-xs font-medium uppercase tracking-wide text-neutral-400">
                   {slot.label}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-neutral-100">
-                    {slot.candidate.name}
-                    <span className="ml-1.5 text-xs font-normal text-neutral-400">
+                  <div className="flex items-center gap-1 truncate text-sm font-medium text-neutral-100">
+                    {isTopScorer && (
+                      <span className="text-amber-400" title="Top scorer this gameweek" aria-hidden>
+                        ★
+                      </span>
+                    )}
+                    <span className="truncate">{slot.candidate.name}</span>
+                    <span className="shrink-0 text-xs font-normal text-neutral-400">
                       {slot.candidate.club}
                     </span>
                   </div>
@@ -117,8 +130,12 @@ export default async function BestXIPage({
                     {slot.candidate.manager_name}
                   </div>
                 </div>
-                <span className="shrink-0 tabular-nums text-lg font-bold text-emerald-400">
-                  {slot.candidate.points.toFixed(1)}
+                <span
+                  className={`shrink-0 tabular-nums text-lg font-bold ${
+                    isTopScorer ? "text-amber-400" : "text-emerald-400"
+                  }`}
+                >
+                  {slot.candidate.points.toFixed(2)}
                 </span>
               </div>
             );

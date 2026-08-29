@@ -32,7 +32,7 @@ function TeamRow({
           isWinner ? "text-emerald-400" : "text-neutral-400"
         }`}
       >
-        {team.points.toFixed(1)}
+        {team.points.toFixed(2)}
       </span>
     </div>
   );
@@ -48,7 +48,7 @@ function StartersList({ team }: { team: GameweekTeam }) {
             <span className="mr-1.5 inline-block w-6 text-neutral-500">{s.position}</span>
             {s.name}
           </span>
-          <span className="shrink-0 tabular-nums text-neutral-400">{s.points.toFixed(1)}</span>
+          <span className="shrink-0 tabular-nums text-neutral-400">{s.points.toFixed(2)}</span>
         </div>
       ))}
     </div>

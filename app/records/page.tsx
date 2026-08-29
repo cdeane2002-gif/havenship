@@ -13,11 +13,11 @@ export default async function RecordsPage() {
   const seasons = await getAllSeasonsData(LEAGUE_ID);
 
   const seasonPoints = topSeasonPoints(seasons, 10);
-  const streaks = longestWinStreaks(seasons, 10);
+  const streaks = longestWinStreaks(seasons, 5);
   const career = careerWinLoss(seasons);
-  const singleWeekHighs = topSingleWeekScores(seasons, 10);
-  const singleWeekLows = worstSingleWeekXI(seasons, 10);
-  const winMargins = biggestWinMargins(seasons, 10);
+  const singleWeekHighs = topSingleWeekScores(seasons, 5);
+  const singleWeekLows = worstSingleWeekXI(seasons, 1);
+  const winMargins = biggestWinMargins(seasons, 3);
 
   const seasonLabels = seasons.map((s) => s.season).join(", ");
 
@@ -43,7 +43,7 @@ export default async function RecordsPage() {
               rank: i + 1,
               primary: e.managerName,
               secondary: e.season,
-              value: e.points.toFixed(1),
+              value: e.points.toFixed(2),
             }))}
           />
         )}
@@ -60,7 +60,7 @@ export default async function RecordsPage() {
               rank: i + 1,
               primary: e.managerName,
               secondary: `GW${e.week}, ${e.season}`,
-              value: e.points.toFixed(1),
+              value: e.points.toFixed(2),
             }))}
           />
         )}
@@ -76,8 +76,8 @@ export default async function RecordsPage() {
               key: `${e.season}-${e.week}-${e.winnerName}-${i}`,
               rank: i + 1,
               primary: `${e.winnerName} beat ${e.loserName}`,
-              secondary: `GW${e.week}, ${e.season} · ${e.winnerPoints.toFixed(1)}-${e.loserPoints.toFixed(1)}`,
-              value: `+${e.margin.toFixed(1)}`,
+              secondary: `GW${e.week}, ${e.season} · ${e.winnerPoints.toFixed(2)}-${e.loserPoints.toFixed(2)}`,
+              value: `+${e.margin.toFixed(2)}`,
             }))}
           />
         )}
@@ -111,7 +111,7 @@ export default async function RecordsPage() {
               rank: i + 1,
               primary: e.managerName,
               secondary: `GW${e.week}, ${e.season}`,
-              value: e.points.toFixed(1),
+              value: e.points.toFixed(2),
             }))}
           />
         )}

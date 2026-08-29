@@ -151,10 +151,10 @@ export default async function StandingsPage() {
                     {row.wins}-{row.losses}-{row.ties}
                   </td>
                   <td className="px-3 py-3 text-right tabular-nums text-neutral-300">
-                    {row.pointsFor.toFixed(1)}
+                    {row.pointsFor.toFixed(2)}
                   </td>
                   <td className="hidden px-3 py-3 text-right tabular-nums text-neutral-300 sm:table-cell">
-                    {row.pointsAgainst.toFixed(1)}
+                    {row.pointsAgainst.toFixed(2)}
                   </td>
                   <td className="px-3 py-3 text-right">{streakBadge(row.streak)}</td>
                 </tr>
