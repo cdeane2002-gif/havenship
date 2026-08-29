@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "grades:generate": "tsx --env-file=.env.local scripts/generate-draft-grades.ts"
+    "grades:generate": "tsx --env-file=.env.local scripts/generate-draft-grades.ts",
+    "gameweek:capture": "tsx --env-file=.env.local scripts/capture-gameweek.ts",
+    "dict:build": "tsx scripts/build-player-dictionary.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",

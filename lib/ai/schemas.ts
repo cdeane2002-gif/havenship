@@ -34,3 +34,10 @@ export const DraftGradesFileSchema = z.object({
   grades: z.array(DraftGradeSchema),
 });
 export type DraftGradesFile = z.infer<typeof DraftGradesFileSchema>;
+
+export const MatchReportResponseSchema = z.object({
+  headline: z.string().min(1),
+  body: z.string().min(1),
+  stat_highlights: z.array(z.string()).min(1),
+});
+export type MatchReportResponse = z.infer<typeof MatchReportResponseSchema>;

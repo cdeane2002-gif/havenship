@@ -61,18 +61,36 @@ export async function getTransactions(
   return (await sleeperGet<SleeperTransaction[]>(`/league/${leagueId}/transactions/${week}`)) ?? [];
 }
 
+export interface SeasonState {
+  week: number;
+  season: string;
+  season_type: string;
+  season_start_date: string;
+  season_has_scores: boolean;
+}
+
+/** Confirmed working: `/league/<id>/matchups/<week>` 404s permanently for this sport on the
+ * public API (verified after the season started, mid-gameweek, and post-gameweek — see
+ * 2026-08-28 investigation notes). Head-to-head pairings and starters come from
+ * lib/sleeper-graphql.ts's getMatchupLegs instead, which requires an authenticated session. */
+export async function getSeasonState(): Promise<SeasonState | null> {
+  return sleeperGet<SeasonState>(`/state/clubsoccer:epl`, LIVE_MATCHDAY_REVALIDATE_SECONDS);
+}
+
 /**
- * Matchups are per-gameweek boxscores. As of the step-0 probe (2026-08-20), this endpoint
- * 404s for every week in both the completed 2025 season and the in-progress 2026 season.
- * Kept here so it's ready to use once the 2026 season's first gameweek (starts 2026-08-21)
- * produces real data — but every caller must handle a null/empty return.
+ * Per-player weekly stats — a public endpoint (no auth needed), keyed by player_id. Since this
+ * league's draft used scoring_type "std", the pts_std field returned here IS this league's
+ * actual fantasy score for that player that week — Sleeper's already applied the scoring.
  */
-export async function getMatchups(leagueId: string, week: number): Promise<unknown[]> {
+export async function getPlayerStatsForWeek(
+  season: string,
+  week: number
+): Promise<Record<string, Record<string, number>>> {
   return (
-    (await sleeperGet<unknown[]>(
-      `/league/${leagueId}/matchups/${week}`,
+    (await sleeperGet<Record<string, Record<string, number>>>(
+      `/stats/clubsoccer:epl/regular/${season}/${week}`,
       LIVE_MATCHDAY_REVALIDATE_SECONDS
-    )) ?? []
+    )) ?? {}
   );
 }
 

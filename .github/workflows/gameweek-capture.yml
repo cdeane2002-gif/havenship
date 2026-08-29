@@ -1,0 +1,55 @@
+name: Capture gameweek
+
+# Runs daily rather than trying to guess EPL fixture congestion — the capture script
+# auto-detects the most recently completed gameweek (via Sleeper's season-state week
+# counter minus one) and is idempotent, so a repeat run on a week with no new data
+# just reproduces the same file and commits nothing.
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Specific gameweek to (re)capture. Leave blank to auto-detect."
+        required: false
+        type: string
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      - name: Refresh player dictionary
+        run: npm run dict:build
+
+      - name: Capture gameweek
+        env:
+          SLEEPER_AUTH_TOKEN: ${{ secrets.SLEEPER_AUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.week }}" ]; then
+            npx tsx scripts/capture-gameweek.ts --week=${{ inputs.week }}
+          else
+            npx tsx scripts/capture-gameweek.ts
+          fi
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/gameweeks/ data/players.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Capture gameweek data [automated]"
+            git push
+          fi
