@@ -6,6 +6,7 @@ import {
   rosterRecord,
   teamNameForUser,
 } from "./sleeper";
+import { getAllGameweekData } from "./gameweek";
 import type { SleeperRoster, SleeperUser } from "./types";
 
 export interface SeasonRecordsData {
@@ -143,5 +144,85 @@ export function longestWinStreaks(seasons: SeasonRecordsData[], limit = 10): Str
     }
   }
   entries.sort((a, b) => b.length - a.length);
+  return entries.slice(0, limit);
+}
+
+export interface SingleWeekScoreEntry {
+  season: string;
+  week: number;
+  managerName: string;
+  points: number;
+}
+
+/**
+ * One entry per team per captured (finalized) gameweek — only ever reads committed
+ * data/gameweeks/*.json, never a live in-progress week, so these records reflect final
+ * results only. Shared by topSingleWeekScores and worstSingleWeekXI.
+ */
+function allSingleWeekScores(seasons: SeasonRecordsData[]): SingleWeekScoreEntry[] {
+  const entries: SingleWeekScoreEntry[] = [];
+  for (const s of seasons) {
+    for (const gw of getAllGameweekData(s.season)) {
+      for (const matchup of gw.matchups) {
+        for (const team of matchup.teams) {
+          entries.push({
+            season: s.season,
+            week: gw.week,
+            managerName: team.manager_name,
+            points: team.points,
+          });
+        }
+      }
+    }
+  }
+  return entries;
+}
+
+export function topSingleWeekScores(seasons: SeasonRecordsData[], limit = 10): SingleWeekScoreEntry[] {
+  return allSingleWeekScores(seasons)
+    .sort((a, b) => b.points - a.points)
+    .slice(0, limit);
+}
+
+/** "Worst Starting XI" — the lowest-scoring set of starters any manager fielded in a
+ * single gameweek. */
+export function worstSingleWeekXI(seasons: SeasonRecordsData[], limit = 10): SingleWeekScoreEntry[] {
+  return allSingleWeekScores(seasons)
+    .sort((a, b) => a.points - b.points)
+    .slice(0, limit);
+}
+
+export interface WinMarginEntry {
+  season: string;
+  week: number;
+  winnerName: string;
+  winnerPoints: number;
+  loserName: string;
+  loserPoints: number;
+  margin: number;
+}
+
+export function biggestWinMargins(seasons: SeasonRecordsData[], limit = 10): WinMarginEntry[] {
+  const entries: WinMarginEntry[] = [];
+  for (const s of seasons) {
+    for (const gw of getAllGameweekData(s.season)) {
+      for (const matchup of gw.matchups) {
+        if (matchup.teams.length !== 2) continue; // skip byes
+        const [a, b] = matchup.teams;
+        const winner = a.points >= b.points ? a : b;
+        const loser = a.points >= b.points ? b : a;
+        entries.push({
+          season: s.season,
+          week: gw.week,
+          winnerName: winner.manager_name,
+          winnerPoints: winner.points,
+          loserName: loser.manager_name,
+          loserPoints: loser.points,
+          margin: winner.points - loser.points,
+        });
+      }
+    }
+  }
+  entries.sort((a, b) => b.margin - a.margin);
   return entries.slice(0, limit);
 }

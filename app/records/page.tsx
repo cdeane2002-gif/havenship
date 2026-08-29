@@ -1,16 +1,13 @@
 import { LEAGUE_ID } from "@/lib/sleeper";
 import {
+  biggestWinMargins,
   careerWinLoss,
   getAllSeasonsData,
   longestWinStreaks,
   topSeasonPoints,
+  topSingleWeekScores,
+  worstSingleWeekXI,
 } from "@/lib/records";
-
-const NOT_YET_AVAILABLE = [
-  "Highest Single-Week Score",
-  "Biggest Win Margin",
-  "Worst Starting XI",
-] as const;
 
 export default async function RecordsPage() {
   const seasons = await getAllSeasonsData(LEAGUE_ID);
@@ -18,6 +15,9 @@ export default async function RecordsPage() {
   const seasonPoints = topSeasonPoints(seasons, 10);
   const streaks = longestWinStreaks(seasons, 10);
   const career = careerWinLoss(seasons);
+  const singleWeekHighs = topSingleWeekScores(seasons, 10);
+  const singleWeekLows = worstSingleWeekXI(seasons, 10);
+  const winMargins = biggestWinMargins(seasons, 10);
 
   const seasonLabels = seasons.map((s) => s.season).join(", ");
 
@@ -50,6 +50,40 @@ export default async function RecordsPage() {
       </section>
 
       <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold">Highest Single-Week Score</h2>
+        {singleWeekHighs.length === 0 ? (
+          <EmptyNote text="No gameweeks captured yet — check back once the first one is complete." />
+        ) : (
+          <RankedList
+            items={singleWeekHighs.map((e, i) => ({
+              key: `${e.season}-${e.week}-${e.managerName}-${i}`,
+              rank: i + 1,
+              primary: e.managerName,
+              secondary: `GW${e.week}, ${e.season}`,
+              value: e.points.toFixed(1),
+            }))}
+          />
+        )}
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold">Biggest Win Margin</h2>
+        {winMargins.length === 0 ? (
+          <EmptyNote text="No gameweeks captured yet — check back once the first one is complete." />
+        ) : (
+          <RankedList
+            items={winMargins.map((e, i) => ({
+              key: `${e.season}-${e.week}-${e.winnerName}-${i}`,
+              rank: i + 1,
+              primary: `${e.winnerName} beat ${e.loserName}`,
+              secondary: `GW${e.week}, ${e.season} · ${e.winnerPoints.toFixed(1)}-${e.loserPoints.toFixed(1)}`,
+              value: `+${e.margin.toFixed(1)}`,
+            }))}
+          />
+        )}
+      </section>
+
+      <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold">Longest Win Streak</h2>
         {streaks.length === 0 ? (
           <EmptyNote text="No completed games yet — check back once a season is underway." />
@@ -61,6 +95,23 @@ export default async function RecordsPage() {
               primary: e.managerName,
               secondary: e.season,
               value: `${e.length}${e.length === 1 ? " win" : " wins"}`,
+            }))}
+          />
+        )}
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold">Worst Starting XI</h2>
+        {singleWeekLows.length === 0 ? (
+          <EmptyNote text="No gameweeks captured yet — check back once the first one is complete." />
+        ) : (
+          <RankedList
+            items={singleWeekLows.map((e, i) => ({
+              key: `${e.season}-${e.week}-${e.managerName}-${i}`,
+              rank: i + 1,
+              primary: e.managerName,
+              secondary: `GW${e.week}, ${e.season}`,
+              value: e.points.toFixed(1),
             }))}
           />
         )}
@@ -107,23 +158,6 @@ export default async function RecordsPage() {
             </table>
           </div>
         )}
-      </section>
-
-      <section>
-        <h2 className="mb-1 text-lg font-semibold text-neutral-300">Coming Soon</h2>
-        <p className="mb-3 text-sm text-neutral-400">
-          These need per-gameweek matchup data, which Sleeper&apos;s API isn&apos;t currently
-          returning for this league (see step-0 probe notes). They&apos;ll appear here once that
-          data is available.
-        </p>
-        <ul className="space-y-1.5 text-sm text-neutral-400">
-          {NOT_YET_AVAILABLE.map((label) => (
-            <li key={label} className="flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-neutral-500" />
-              {label}
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
   );
