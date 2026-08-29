@@ -32,9 +32,11 @@ jobs:
         run: npm run dict:build
 
       - name: Capture gameweek
+        # AI match reports are disabled for now (no funded Anthropic key) — the capture
+        # script doesn't call Claude at all currently, so ANTHROPIC_API_KEY isn't needed
+        # here. Re-add it if match reports come back.
         env:
           SLEEPER_AUTH_TOKEN: ${{ secrets.SLEEPER_AUTH_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           if [ -n "${{ inputs.week }}" ]; then
             npx tsx scripts/capture-gameweek.ts --week=${{ inputs.week }}

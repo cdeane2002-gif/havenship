@@ -1,5 +1,6 @@
-import { LEAGUE_ID, getLeague } from "@/lib/sleeper";
+import { LEAGUE_ID, getLeague, getSeasonState } from "@/lib/sleeper";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
+import { getLiveGameweekData } from "@/lib/gameweek-live";
 import { computeBestXI } from "@/lib/best-xi";
 
 export default async function BestXIPage({
@@ -17,7 +18,13 @@ export default async function BestXIPage({
     );
   }
 
-  const availableWeeks = getAvailableWeeks(league.season);
+  const state = await getSeasonState();
+  const currentWeek = state?.week ?? null;
+
+  const capturedWeeks = getAvailableWeeks(league.season);
+  const availableWeeks = Array.from(
+    new Set(currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
+  ).sort((a, b) => a - b);
 
   if (availableWeeks.length === 0) {
     return (
@@ -28,7 +35,7 @@ export default async function BestXIPage({
         </header>
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
           No gameweeks captured yet. The Best XI appears here once the first gameweek is
-          complete.
+          underway.
         </div>
       </div>
     );
@@ -39,7 +46,10 @@ export default async function BestXIPage({
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const week = availableWeeks.includes(parsedWeek) ? parsedWeek : availableWeeks[availableWeeks.length - 1];
 
-  const gameweek = getGameweekData(league.season, week);
+  const isLiveWeek = week === currentWeek;
+  const gameweek = isLiveWeek
+    ? (await getLiveGameweekData(LEAGUE_ID, league.season, week)) ?? getGameweekData(league.season, week)
+    : getGameweekData(league.season, week);
   const slots = gameweek ? computeBestXI(gameweek.matchups.flatMap((m) => m.teams)) : [];
   const totalPoints = slots.reduce((sum, s) => sum + s.candidate.points, 0);
 
@@ -67,13 +77,23 @@ export default async function BestXIPage({
             }`}
           >
             GW{w}
+            {w === currentWeek ? " •" : ""}
           </a>
         ))}
       </div>
 
+      {isLiveWeek && (
+        <div className="mb-4 flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          LIVE — updates as matches are played
+        </div>
+      )}
+
       {!gameweek ? (
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
-          Couldn&apos;t load gameweek {week}.
+          {isLiveWeek
+            ? "Gameweek is underway but no scores yet — check back once matches kick off."
+            : `Couldn't load gameweek ${week}.`}
         </div>
       ) : (
         <div className="overflow-hidden rounded-lg border border-neutral-800">

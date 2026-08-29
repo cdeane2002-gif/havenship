@@ -28,7 +28,9 @@ export interface MatchupLeg {
   round: number;
   roster_id: number;
   matchup_id: number;
-  points: number;
+  // null while the gameweek is still in progress — Sleeper only computes this team total
+  // once the round is complete. Sum each starter's individual score as a live fallback.
+  points: number | null;
   starters: string[];
   players: string[];
   player_map: Record<string, GraphQLPlayer>;
@@ -121,7 +123,7 @@ export function pairMatchupLegs(legs: MatchupLeg[]): MatchupPair[] {
     .map(([matchup_id, matchLegs]) => ({
       matchup_id,
       round: matchLegs[0].round,
-      legs: matchLegs.sort((a, b) => b.points - a.points),
+      legs: matchLegs.sort((a, b) => (b.points ?? 0) - (a.points ?? 0)),
     }))
     .sort((a, b) => a.matchup_id - b.matchup_id);
 }

@@ -1,5 +1,6 @@
-import { LEAGUE_ID, avatarUrlForUser, getLeague, getUsers } from "@/lib/sleeper";
+import { LEAGUE_ID, avatarUrlForUser, getLeague, getSeasonState, getUsers } from "@/lib/sleeper";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
+import { getLiveGameweekData } from "@/lib/gameweek-live";
 import type { GameweekTeam } from "@/lib/gameweek-schemas";
 
 function TeamRow({
@@ -73,7 +74,13 @@ export default async function ResultsPage({
     );
   }
 
-  const availableWeeks = getAvailableWeeks(league.season);
+  const state = await getSeasonState();
+  const currentWeek = state?.week ?? null;
+
+  const capturedWeeks = getAvailableWeeks(league.season);
+  const availableWeeks = Array.from(
+    new Set(currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
+  ).sort((a, b) => a - b);
 
   if (availableWeeks.length === 0) {
     return (
@@ -83,7 +90,7 @@ export default async function ResultsPage({
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Results</h1>
         </header>
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
-          No gameweeks captured yet. Results appear here once the first gameweek is complete.
+          No gameweeks captured yet. Results appear here once the first gameweek is underway.
         </div>
       </div>
     );
@@ -94,7 +101,10 @@ export default async function ResultsPage({
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const week = availableWeeks.includes(parsedWeek) ? parsedWeek : availableWeeks[availableWeeks.length - 1];
 
-  const gameweek = getGameweekData(league.season, week);
+  const isLiveWeek = week === currentWeek;
+  const gameweek = isLiveWeek
+    ? (await getLiveGameweekData(LEAGUE_ID, league.season, week)) ?? getGameweekData(league.season, week)
+    : getGameweekData(league.season, week);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
@@ -115,13 +125,23 @@ export default async function ResultsPage({
             }`}
           >
             GW{w}
+            {w === currentWeek ? " •" : ""}
           </a>
         ))}
       </div>
 
+      {isLiveWeek && (
+        <div className="mb-4 flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          LIVE — updates as matches are played
+        </div>
+      )}
+
       {!gameweek ? (
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
-          Couldn&apos;t load gameweek {week}.
+          {isLiveWeek
+            ? "Gameweek is underway but no scores yet — check back once matches kick off."
+            : `Couldn't load gameweek ${week}.`}
         </div>
       ) : (
         <div className="space-y-4">
@@ -155,25 +175,7 @@ export default async function ResultsPage({
                   )}
                 </div>
 
-                {!teamB ? (
-                  <p className="mb-3 text-sm text-neutral-400">Bye week.</p>
-                ) : matchup.report ? (
-                  <div className="mb-3 rounded border border-neutral-800 bg-neutral-950/50 p-3">
-                    <p className="mb-1 text-sm font-semibold text-neutral-100">
-                      {matchup.report.headline}
-                    </p>
-                    <p className="mb-2 text-sm text-neutral-300">{matchup.report.body}</p>
-                    <ul className="space-y-0.5">
-                      {matchup.report.stat_highlights.map((stat, i) => (
-                        <li key={i} className="text-xs text-neutral-400">
-                          • {stat}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <p className="mb-3 text-sm text-amber-300">Report pending.</p>
-                )}
+                {!teamB && <p className="mb-3 text-sm text-neutral-400">Bye week.</p>}
 
                 <details className="text-sm">
                   <summary className="cursor-pointer text-neutral-400 hover:text-neutral-200">
