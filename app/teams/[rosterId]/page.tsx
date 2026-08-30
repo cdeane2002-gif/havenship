@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { BackButton } from "@/components/BackButton";
 import {
   LEAGUE_ID,
   avatarUrlForUser,
@@ -71,9 +71,7 @@ export default async function TeamProfilePage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
-      <Link href="/" className="mb-4 inline-block text-sm text-fg-secondary hover:text-fg-primary">
-        ← Back to Standings
-      </Link>
+      <BackButton fallbackHref="/" label="← Back to Standings" />
 
       <header className="mb-6 flex items-center gap-4 border-b border-surface-border pb-4">
         {avatarUrl ? (

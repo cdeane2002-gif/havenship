@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { LEAGUE_ID } from "@/lib/sleeper";
 import { getPlayerHistory } from "@/lib/player-profile";
 import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
 import { getUpcomingFixturesForClub } from "@/lib/fixtures";
 import { playerImageUrl } from "@/lib/player-image";
 import { ScoreBreakdown } from "@/components/ScoreBreakdown";
+import { BackButton } from "@/components/BackButton";
 
 export default async function PlayerProfilePage({
   params,
@@ -30,9 +30,7 @@ export default async function PlayerProfilePage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
-      <Link href="/results" className="mb-4 inline-block text-sm text-fg-secondary hover:text-fg-primary">
-        ← Back
-      </Link>
+      <BackButton fallbackHref="/results" />
 
       <header className="mb-6 flex items-center gap-4 border-b border-surface-border pb-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
