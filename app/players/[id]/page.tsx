@@ -4,6 +4,7 @@ import { getPlayerHistory } from "@/lib/player-profile";
 import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
 import { getUpcomingFixturesForClub } from "@/lib/fixtures";
 import { playerImageUrl } from "@/lib/player-image";
+import { ScoreBreakdown } from "@/components/ScoreBreakdown";
 
 export default async function PlayerProfilePage({
   params,
@@ -109,16 +110,19 @@ export default async function PlayerProfilePage({
             {[...history].reverse().map((h) => (
               <div
                 key={`${h.season}-${h.week}`}
-                className="flex items-center justify-between border-b border-surface-border/60 bg-surface-card px-4 py-2.5 text-sm last:border-0 even:bg-surface-row/30"
+                className="border-b border-surface-border/60 bg-surface-card px-4 py-2.5 text-sm last:border-0 even:bg-surface-row/30"
               >
-                <div>
-                  <span className="text-fg-primary">GW{h.week}</span>
-                  <span className="ml-1.5 text-xs text-fg-muted">{h.season}</span>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-fg-primary">GW{h.week}</span>
+                    <span className="ml-1.5 text-xs text-fg-muted">{h.season}</span>
+                  </div>
+                  <span className="text-xs text-fg-secondary">{h.managerName}</span>
+                  <span className="font-mono font-semibold tabular-nums text-fg-primary">
+                    {h.points.toFixed(2)}
+                  </span>
                 </div>
-                <span className="text-xs text-fg-secondary">{h.managerName}</span>
-                <span className="font-mono font-semibold tabular-nums text-fg-primary">
-                  {h.points.toFixed(2)}
-                </span>
+                <ScoreBreakdown season={h.season} week={h.week} playerId={playerId} />
               </div>
             ))}
           </div>
