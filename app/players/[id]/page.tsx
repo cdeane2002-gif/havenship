@@ -120,7 +120,12 @@ export default async function PlayerProfilePage({
                     {h.points.toFixed(2)}
                   </span>
                 </div>
-                <ScoreBreakdown season={h.season} week={h.week} playerId={playerId} />
+                <ScoreBreakdown
+                  season={h.season}
+                  week={h.week}
+                  playerId={playerId}
+                  opponentManagerName={h.opponentManagerName}
+                />
               </div>
             ))}
           </div>

@@ -142,6 +142,79 @@ export async function getPlayoffBracket(leagueId: string): Promise<BracketMatch[
   return data.league_playoff_bracket ?? [];
 }
 
+// "scores" is Sleeper's real-world (Premier League) fixture/result feed — unrelated to
+// fantasy matchups. metadata is an opaque Json scalar (can't select sub-fields in the query
+// itself); shape below reflects what's actually been observed for clubsoccer:epl, including
+// which real player_ids started for each side, which is how a fantasy player is matched to
+// a specific fixture and side.
+interface ScoreClubMeta {
+  abbr: string;
+  name: string;
+  team: string;
+}
+
+interface ScoreRosterPlayer {
+  player_id: string;
+}
+
+interface ScoreMetadata {
+  home_team?: ScoreClubMeta;
+  away_team?: ScoreClubMeta;
+  rosters?: {
+    home?: { players?: ScoreRosterPlayer[] };
+    away?: { players?: ScoreRosterPlayer[] };
+  };
+}
+
+interface RawScore {
+  game_id: string;
+  metadata: ScoreMetadata | null;
+}
+
+const SCORES_QUERY = `
+  query($sport: String!, $season_type: String!, $season: String!, $week: Int) {
+    scores(sport: $sport, season_type: $season_type, season: $season, week: $week) {
+      game_id
+      metadata
+    }
+  }
+`;
+
+export interface FixtureOpponent {
+  isHome: boolean;
+  club: ScoreClubMeta;
+  opponent: ScoreClubMeta;
+}
+
+/** Finds the real-world Premier League fixture a player appeared in for a given gameweek,
+ * and which club they faced. Returns null if the player can't be found in any fixture's
+ * starting/bench roster that week (e.g. an unused bench player in Sleeper's own feed). */
+export async function getFixtureOpponentForPlayer(
+  season: string,
+  week: number,
+  playerId: string
+): Promise<FixtureOpponent | null> {
+  const data = await graphqlRequest<{ scores: RawScore[] | null }>(SCORES_QUERY, {
+    sport: "clubsoccer:epl",
+    season_type: "regular",
+    season,
+    week,
+  });
+
+  for (const score of data.scores ?? []) {
+    const meta = score.metadata;
+    if (!meta?.home_team || !meta?.away_team) continue;
+
+    const inHome = meta.rosters?.home?.players?.some((p) => p.player_id === playerId);
+    if (inHome) return { isHome: true, club: meta.home_team, opponent: meta.away_team };
+
+    const inAway = meta.rosters?.away?.players?.some((p) => p.player_id === playerId);
+    if (inAway) return { isHome: false, club: meta.away_team, opponent: meta.home_team };
+  }
+
+  return null;
+}
+
 export interface MatchupPair {
   matchup_id: number;
   round: number;

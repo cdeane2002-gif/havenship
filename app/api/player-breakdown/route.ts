@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { LEAGUE_ID, getLeagueSeasonChain } from "@/lib/sleeper";
 import { getPointsBreakdown } from "@/lib/stat-breakdown";
+import { getFixtureOpponentForPlayer, SleeperAuthError } from "@/lib/sleeper-graphql";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -22,11 +23,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: `Unknown season ${season}` }, { status: 404 });
   }
 
-  const breakdown = await getPointsBreakdown(
-    season,
-    week,
-    playerId,
-    seasonEntry.league.scoring_settings
-  );
-  return NextResponse.json({ breakdown });
+  const [breakdown, fixture] = await Promise.all([
+    getPointsBreakdown(season, week, playerId, seasonEntry.league.scoring_settings),
+    getFixtureOpponentForPlayer(season, week, playerId).catch((err) => {
+      if (err instanceof SleeperAuthError) {
+        console.error(err.message);
+        return null;
+      }
+      throw err;
+    }),
+  ]);
+
+  return NextResponse.json({ breakdown, fixture });
 }

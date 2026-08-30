@@ -2,20 +2,24 @@
 
 import { useState } from "react";
 import type { StatContribution } from "@/lib/stat-breakdown";
+import type { FixtureOpponent } from "@/lib/sleeper-graphql";
 
 export function ScoreBreakdown({
   season,
   week,
   playerId,
+  opponentManagerName,
 }: {
   season: string;
   week: number;
   playerId: string;
+  opponentManagerName: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [data, setData] = useState<StatContribution[] | null>(null);
+  const [fixture, setFixture] = useState<FixtureOpponent | null | undefined>(undefined);
 
   async function toggle() {
     if (open) {
@@ -32,8 +36,12 @@ export function ScoreBreakdown({
         `/api/player-breakdown?season=${encodeURIComponent(season)}&week=${week}&playerId=${encodeURIComponent(playerId)}`
       );
       if (!res.ok) throw new Error("request failed");
-      const json = (await res.json()) as { breakdown: StatContribution[] };
+      const json = (await res.json()) as {
+        breakdown: StatContribution[];
+        fixture: FixtureOpponent | null;
+      };
       setData(json.breakdown);
+      setFixture(json.fixture);
     } catch {
       setFailed(true);
     } finally {
@@ -54,6 +62,17 @@ export function ScoreBreakdown({
         <div className="mt-1.5 rounded border border-surface-border/60 bg-surface-row/40 px-2.5 py-2">
           {loading && <p className="text-xs text-fg-muted">Loading…</p>}
           {failed && <p className="text-xs text-loss">Couldn&apos;t load breakdown.</p>}
+          {!loading && !failed && (opponentManagerName || fixture !== undefined) && (
+            <div className="mb-1.5 space-y-0.5 border-b border-surface-border/60 pb-1.5 text-[11px] text-fg-muted">
+              {fixture && (
+                <p>
+                  Premier League: {fixture.club.abbr} {fixture.isHome ? "vs" : "@"}{" "}
+                  {fixture.opponent.abbr} ({fixture.opponent.name})
+                </p>
+              )}
+              {opponentManagerName && <p>Fantasy: vs {opponentManagerName}</p>}
+            </div>
+          )}
           {data && data.length === 0 && (
             <p className="text-xs text-fg-muted">No scoring stats recorded for this week.</p>
           )}

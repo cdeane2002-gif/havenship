@@ -5,6 +5,7 @@ export interface PlayerAppearance {
   week: number;
   points: number;
   managerName: string;
+  opponentManagerName: string | null; // the fantasy opponent that week — null on a bye
   club: string;
   position: string;
   name: string;
@@ -21,11 +22,13 @@ export function getPlayerHistory(playerId: string): PlayerAppearance[] {
         for (const team of matchup.teams) {
           const starter = team.starters.find((s) => s.player_id === playerId);
           if (starter) {
+            const opponent = matchup.teams.find((t) => t.roster_id !== team.roster_id);
             appearances.push({
               season,
               week: gw.week,
               points: starter.points,
               managerName: team.manager_name,
+              opponentManagerName: opponent?.manager_name ?? null,
               club: starter.club,
               position: starter.position,
               name: starter.name,
