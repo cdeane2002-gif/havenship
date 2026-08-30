@@ -11,6 +11,7 @@ import {
   rosterStreak,
   teamNameForUser,
 } from "@/lib/sleeper";
+import { rankColorClass } from "@/lib/theme";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
 interface StandingsRow {
@@ -55,10 +56,10 @@ function streakBadge(streak: string | null) {
   const isWin = streak.endsWith("W");
   const isLoss = streak.endsWith("L");
   const color = isWin
-    ? "bg-emerald-500/15 text-emerald-400"
+    ? "bg-win/15 text-win"
     : isLoss
-      ? "bg-rose-500/15 text-rose-400"
-      : "bg-neutral-500/15 text-neutral-300";
+      ? "bg-loss/15 text-loss"
+      : "bg-draw/15 text-draw";
   return (
     <span className={`inline-block rounded px-1.5 py-0.5 text-[11px] font-semibold ${color}`}>
       {streak}
@@ -75,7 +76,7 @@ export default async function StandingsPage() {
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-fg-secondary">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -89,9 +90,11 @@ export default async function StandingsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
-      <header className="mb-6">
-        <p className="text-sm font-medium text-emerald-400">{league.season} Season</p>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{league.name}</h1>
+      <header className="mb-6 border-b-2 border-page-standings pb-3">
+        <p className="text-sm font-medium text-page-standings">{league.season} Season</p>
+        <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+          {league.name}
+        </h1>
       </header>
 
       {isDrafting && (
@@ -103,15 +106,15 @@ export default async function StandingsPage() {
       )}
 
       {!isDrafting && !seasonHasStarted && (
-        <div className="mb-6 rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-sm text-neutral-300">
+        <div className="mb-6 rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
           No games played yet this season. Every team starts level.
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-neutral-800">
+      <div className="overflow-hidden rounded-lg border border-surface-border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-400">
+            <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
               <th className="px-3 py-2 font-medium">#</th>
               <th className="px-3 py-2 font-medium">Team</th>
               <th className="px-3 py-2 text-center font-medium">W-L-D</th>
@@ -122,14 +125,17 @@ export default async function StandingsPage() {
           </thead>
           <tbody>
             {rows.map((row, i) => {
+              const rank = i + 1;
               const name = row.user ? teamNameForUser(row.user) : `Roster ${row.roster.roster_id}`;
               const avatarUrl = row.user ? avatarUrlForUser(row.user) : null;
               return (
                 <tr
                   key={row.roster.roster_id}
-                  className="border-b border-neutral-800/60 last:border-0 even:bg-neutral-900/30"
+                  className="border-b border-surface-border/60 last:border-0 even:bg-surface-row/40 hover:bg-surface-row/60"
                 >
-                  <td className="px-3 py-3 text-neutral-400">{i + 1}</td>
+                  <td className={`px-3 py-3 font-mono font-semibold ${rankColorClass(rank)}`}>
+                    {rank}
+                  </td>
                   <td className="px-3 py-3">
                     <div className="flex items-center gap-2.5">
                       {avatarUrl ? (
@@ -138,22 +144,22 @@ export default async function StandingsPage() {
                           alt=""
                           width={28}
                           height={28}
-                          className="h-7 w-7 shrink-0 rounded-full bg-neutral-800"
+                          className="h-7 w-7 shrink-0 rounded-full border border-surface-border bg-surface-row"
                           unoptimized
                         />
                       ) : (
-                        <div className="h-7 w-7 shrink-0 rounded-full bg-neutral-800" />
+                        <div className="h-7 w-7 shrink-0 rounded-full border border-surface-border bg-surface-row" />
                       )}
-                      <span className="truncate font-medium">{name}</span>
+                      <span className="truncate font-medium text-fg-primary">{name}</span>
                     </div>
                   </td>
-                  <td className="px-3 py-3 text-center tabular-nums text-neutral-300">
+                  <td className="px-3 py-3 text-center font-mono tabular-nums text-fg-secondary">
                     {row.wins}-{row.losses}-{row.ties}
                   </td>
-                  <td className="px-3 py-3 text-right tabular-nums text-neutral-300">
+                  <td className="px-3 py-3 text-right font-mono tabular-nums font-semibold text-fg-primary">
                     {row.pointsFor.toFixed(2)}
                   </td>
-                  <td className="hidden px-3 py-3 text-right tabular-nums text-neutral-300 sm:table-cell">
+                  <td className="hidden px-3 py-3 text-right font-mono tabular-nums text-fg-secondary sm:table-cell">
                     {row.pointsAgainst.toFixed(2)}
                   </td>
                   <td className="px-3 py-3 text-right">{streakBadge(row.streak)}</td>

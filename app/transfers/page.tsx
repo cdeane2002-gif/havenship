@@ -26,7 +26,7 @@ export default async function TransfersPage() {
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 text-center text-neutral-300">
+      <div className="mx-auto max-w-3xl px-4 py-10 text-center text-fg-secondary">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -66,13 +66,15 @@ export default async function TransfersPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
-      <header className="mb-6">
-        <p className="text-sm font-medium text-emerald-400">{league.season} Season</p>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Transfers</h1>
+      <header className="mb-6 border-b-2 border-page-transfers pb-3">
+        <p className="text-sm font-medium text-page-transfers">{league.season} Season</p>
+        <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+          Transfers
+        </h1>
       </header>
 
       {allTransactions.length === 0 ? (
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
+        <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
           No transfer activity yet.
         </div>
       ) : (
@@ -90,22 +92,22 @@ export default async function TransfersPage() {
             return (
               <li
                 key={tx.transaction_id}
-                className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-3"
+                className="rounded-lg border border-surface-border bg-surface-card p-3"
               >
-                <div className="mb-1.5 flex items-center justify-between gap-2 text-xs text-neutral-400">
-                  <span className="font-semibold text-neutral-300">{managerName}</span>
+                <div className="mb-1.5 flex items-center justify-between gap-2 text-xs text-fg-muted">
+                  <span className="font-semibold text-fg-secondary">{managerName}</span>
                   <span>
                     {TYPE_LABELS[tx.type] ?? tx.type} · {date}
                   </span>
                 </div>
                 <div className="space-y-0.5 text-sm">
                   {adds.map((playerId) => (
-                    <p key={`add-${playerId}`} className="text-emerald-400">
+                    <p key={`add-${playerId}`} className="text-win">
                       + {playerLabel(playerId, playerDict)}
                     </p>
                   ))}
                   {drops.map((playerId) => (
-                    <p key={`drop-${playerId}`} className="text-rose-400">
+                    <p key={`drop-${playerId}`} className="text-loss">
                       − {playerLabel(playerId, playerDict)}
                     </p>
                   ))}

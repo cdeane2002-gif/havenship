@@ -21,7 +21,7 @@ export default async function RulesPage() {
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-neutral-300">
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center text-fg-secondary">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -36,34 +36,36 @@ export default async function RulesPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
-      <header className="mb-8">
-        <p className="text-sm font-medium text-emerald-400">{league.name}</p>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Rules &amp; Scoring</h1>
-        <p className="mt-1 text-sm text-neutral-300">
+      <header className="mb-8 border-b-2 border-page-rules pb-3">
+        <p className="text-sm font-medium text-page-rules">{league.name}</p>
+        <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+          Rules &amp; Scoring
+        </h1>
+        <p className="mt-1 text-sm text-fg-secondary">
           Pulled straight from the league&apos;s live settings on Sleeper.
         </p>
       </header>
 
       {/* Roster format */}
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold">Roster Format</h2>
-        <p className="mb-3 text-sm text-neutral-300">
+        <h2 className="mb-3 text-lg font-semibold text-fg-primary">Roster Format</h2>
+        <p className="mb-3 text-sm text-fg-secondary">
           {totalStarters} starters, {bench?.count ?? 0} bench spots — {league.roster_positions.length} total.
         </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {starters.map((slot) => (
             <div
               key={slot.slot}
-              className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2.5"
+              className="rounded-lg border border-surface-border bg-surface-card px-3 py-2.5"
             >
-              <div className="text-lg font-bold text-emerald-400">{slot.count}×</div>
-              <div className="text-sm text-neutral-300">{slot.label}</div>
+              <div className="text-lg font-bold text-page-rules">{slot.count}×</div>
+              <div className="text-sm text-fg-secondary">{slot.label}</div>
             </div>
           ))}
           {bench && (
-            <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2.5">
-              <div className="text-lg font-bold text-neutral-400">{bench.count}×</div>
-              <div className="text-sm text-neutral-300">{bench.label}</div>
+            <div className="rounded-lg border border-surface-border bg-surface-card px-3 py-2.5">
+              <div className="text-lg font-bold text-fg-muted">{bench.count}×</div>
+              <div className="text-sm text-fg-secondary">{bench.label}</div>
             </div>
           )}
         </div>
@@ -71,15 +73,15 @@ export default async function RulesPage() {
 
       {/* League settings */}
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold">League Settings</h2>
+        <h2 className="mb-3 text-lg font-semibold text-fg-primary">League Settings</h2>
         <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
           {LEAGUE_SETTING_LABELS.map(({ key, label, format }) => {
             const value = league.settings[key];
             if (value === undefined) return null;
             return (
               <div key={key}>
-                <dt className="text-xs uppercase tracking-wide text-neutral-400">{label}</dt>
-                <dd className="text-sm font-medium text-neutral-200">{format(value)}</dd>
+                <dt className="text-xs uppercase tracking-wide text-fg-muted">{label}</dt>
+                <dd className="text-sm font-medium text-fg-primary">{format(value)}</dd>
               </div>
             );
           })}
@@ -88,15 +90,15 @@ export default async function RulesPage() {
 
       {/* Scoring matrix */}
       <section className="mb-8">
-        <h2 className="mb-1 text-lg font-semibold">Scoring</h2>
-        <p className="mb-3 text-sm text-neutral-300">
+        <h2 className="mb-1 text-lg font-semibold text-fg-primary">Scoring</h2>
+        <p className="mb-3 text-sm text-fg-secondary">
           Points awarded per stat, by position. Blank means that stat isn&apos;t scored for that
           position.
         </p>
-        <div className="overflow-x-auto rounded-lg border border-neutral-800">
+        <div className="overflow-x-auto rounded-lg border border-surface-border">
           <table className="w-full min-w-[420px] text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-400">
+              <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
                 <th className="px-3 py-2 font-medium">Stat</th>
                 {POSITION_ORDER.map((pos) => (
                   <th key={pos} className="px-3 py-2 text-right font-medium">
@@ -111,10 +113,10 @@ export default async function RulesPage() {
                 if (rowsInCategory.length === 0) return null;
                 return (
                   <Fragment key={category}>
-                    <tr className="bg-neutral-900/70">
+                    <tr className="bg-surface-row/70">
                       <td
                         colSpan={POSITION_ORDER.length + 1}
-                        className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-neutral-300"
+                        className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-fg-secondary"
                       >
                         {category}
                       </td>
@@ -122,9 +124,9 @@ export default async function RulesPage() {
                     {rowsInCategory.map((row) => (
                       <tr
                         key={row.stat}
-                        className="border-b border-neutral-800/60 last:border-0 even:bg-neutral-900/30"
+                        className="border-b border-surface-border/60 last:border-0 even:bg-surface-row/40"
                       >
-                        <td className="px-3 py-2 text-neutral-200">{row.label}</td>
+                        <td className="px-3 py-2 text-fg-primary">{row.label}</td>
                         {POSITION_ORDER.map((pos) => {
                           const value = row.valuesByPosition[pos];
                           const isNegative = typeof value === "number" && value < 0;
@@ -132,12 +134,12 @@ export default async function RulesPage() {
                           return (
                             <td
                               key={pos}
-                              className={`px-3 py-2 text-right tabular-nums ${
+                              className={`px-3 py-2 text-right font-mono tabular-nums ${
                                 isNegative
-                                  ? "text-rose-400"
+                                  ? "text-loss"
                                   : isPositive
-                                    ? "text-emerald-400"
-                                    : "text-neutral-400"
+                                    ? "text-win"
+                                    : "text-fg-muted"
                               }`}
                             >
                               {formatPoints(value)}

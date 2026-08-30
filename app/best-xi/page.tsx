@@ -12,7 +12,7 @@ export default async function BestXIPage({
 
   if (!league) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 text-center text-neutral-300">
+      <div className="mx-auto max-w-3xl px-4 py-10 text-center text-fg-secondary">
         Couldn&apos;t reach the Sleeper API for this league. Try again shortly.
       </div>
     );
@@ -29,11 +29,13 @@ export default async function BestXIPage({
   if (availableWeeks.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
-        <header className="mb-6">
-          <p className="text-sm font-medium text-emerald-400">{league.season} Season</p>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Best XI</h1>
+        <header className="mb-6 border-b-2 border-page-bestxi pb-3">
+          <p className="text-sm font-medium text-page-bestxi">{league.season} Season</p>
+          <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+            Best XI
+          </h1>
         </header>
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
+        <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
           No gameweeks captured yet. The Best XI appears here once the first gameweek is
           underway.
         </div>
@@ -60,10 +62,12 @@ export default async function BestXIPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
-      <header className="mb-6">
-        <p className="text-sm font-medium text-emerald-400">{league.season} Season</p>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Best XI</h1>
-        <p className="mt-1 text-sm text-neutral-300">
+      <header className="mb-6 border-b-2 border-page-bestxi pb-3">
+        <p className="text-sm font-medium text-page-bestxi">{league.season} Season</p>
+        <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+          Best XI
+        </h1>
+        <p className="mt-1 text-sm text-fg-secondary">
           The highest-scoring valid lineup across every manager&apos;s starters this gameweek —
           {" "}
           {totalPoints.toFixed(2)} combined points.
@@ -77,8 +81,8 @@ export default async function BestXIPage({
             href={`/best-xi?week=${w}`}
             className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
               w === week
-                ? "bg-emerald-500/20 text-emerald-300"
-                : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
+                ? "bg-page-bestxi/20 text-page-bestxi"
+                : "bg-surface-row text-fg-secondary hover:bg-surface-border"
             }`}
           >
             GW{w}
@@ -88,51 +92,51 @@ export default async function BestXIPage({
       </div>
 
       {isLiveWeek && (
-        <div className="mb-4 flex items-center gap-1.5 text-xs font-medium text-emerald-400">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+        <div className="mb-4 flex items-center gap-1.5 text-xs font-medium text-page-results">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-page-results" />
           LIVE — updates as matches are played
         </div>
       )}
 
       {!gameweek ? (
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm text-neutral-300">
+        <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
           {isLiveWeek
             ? "Gameweek is underway but no scores yet — check back once matches kick off."
             : `Couldn't load gameweek ${week}.`}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-neutral-800">
+        <div className="overflow-hidden rounded-lg border border-surface-border">
           {slots.map((slot, i) => {
             const isTopScorer = slot.candidate.player_id === topScorerId;
             return (
               <div
                 key={`${slot.slot}-${i}`}
-                className={`flex items-center gap-3 border-b border-neutral-800/60 px-4 py-3 last:border-0 ${
-                  isTopScorer ? "bg-amber-500/10" : "bg-neutral-900/30 even:bg-neutral-900/50"
+                className={`flex items-center gap-3 border-b border-surface-border/60 px-4 py-3 last:border-0 ${
+                  isTopScorer ? "bg-gold/10" : "bg-surface-card even:bg-surface-row/30"
                 }`}
               >
-                <span className="w-24 shrink-0 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                <span className="w-24 shrink-0 text-xs font-medium uppercase tracking-wide text-fg-muted">
                   {slot.label}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1 truncate text-sm font-medium text-neutral-100">
+                  <div className="flex items-center gap-1 truncate text-sm font-medium text-fg-primary">
                     {isTopScorer && (
-                      <span className="text-amber-400" title="Top scorer this gameweek" aria-hidden>
+                      <span className="text-gold" title="Top scorer this gameweek" aria-hidden>
                         ★
                       </span>
                     )}
                     <span className="truncate">{slot.candidate.name}</span>
-                    <span className="shrink-0 text-xs font-normal text-neutral-400">
+                    <span className="shrink-0 text-xs font-normal text-fg-secondary">
                       {slot.candidate.club}
                     </span>
                   </div>
-                  <div className="truncate text-xs text-neutral-400">
+                  <div className="truncate text-xs text-fg-secondary">
                     {slot.candidate.manager_name}
                   </div>
                 </div>
                 <span
-                  className={`shrink-0 tabular-nums text-lg font-bold ${
-                    isTopScorer ? "text-amber-400" : "text-emerald-400"
+                  className={`shrink-0 font-mono tabular-nums text-lg font-bold ${
+                    isTopScorer ? "text-gold" : "text-fg-primary"
                   }`}
                 >
                   {slot.candidate.points.toFixed(2)}

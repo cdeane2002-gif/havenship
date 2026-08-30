@@ -3,4 +3,40 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Surfaces */
+  --color-surface-page: #0b0f19;
+  --color-surface-card: #131927;
+  --color-surface-row: #1a2133;
+  --color-surface-border: #283247;
+
+  /* Text tiers */
+  --color-fg-primary: #edf1f7;
+  --color-fg-secondary: #94a1b5;
+  --color-fg-muted: #647085;
+
+  /* Accent */
+  --color-accent: #00d18d;
+  --color-accent-hover: #2ee6a8;
+  --color-accent-tint: #0a2e27;
+
+  /* Win / loss / draw */
+  --color-win: #2dc87a;
+  --color-loss: #e95a5a;
+  --color-draw: #94a1b5;
+
+  /* Medal ranks */
+  --color-gold: #f0be4a;
+  --color-silver: #bec6d2;
+  --color-bronze: #c58a58;
+
+  /* Per-page accent — surfaces stay identical everywhere; only the active-tab underline,
+     page-title rule, and in-page highlights change per page. */
+  --color-page-standings: #00d18d;
+  --color-page-results: #3898ff;
+  --color-page-rules: #94a1b5;
+  --color-page-draft: #f5a623;
+  --color-page-bestxi: #f0be4a;
+  --color-page-transfers: #8b5cf6;
+  --color-page-records: #2dd4bf;
 }
