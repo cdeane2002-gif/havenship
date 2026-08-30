@@ -11,6 +11,8 @@ import {
   rosterStreak,
   teamNameForUser,
 } from "@/lib/sleeper";
+import { getPlayoffBracket, SleeperAuthError } from "@/lib/sleeper-graphql";
+import { resolveBracket, type ResolvedBracketMatch } from "@/lib/playoff-bracket";
 import { rankColorClass } from "@/lib/theme";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
@@ -87,6 +89,22 @@ export default async function StandingsPage() {
   const isDrafting = league.status === "drafting";
   const currentPickNo = league.metadata?.current_pick_no;
   const totalPicks = league.total_rosters * 17; // 17 rounds, confirmed via draft settings
+
+  // Bracket seeding exists from league creation (based on current standings while the
+  // regular season is underway), not just once playoffs start. Fails gracefully — a missing/
+  // expired auth token shouldn't take down the whole Standings page.
+  let bracket: ResolvedBracketMatch[] = [];
+  try {
+    const managerNameForRoster = (rosterId: number) => {
+      const row = rows.find((r) => r.roster.roster_id === rosterId);
+      return row ? (row.user ? teamNameForUser(row.user) : `Roster ${rosterId}`) : `Roster ${rosterId}`;
+    };
+    const rawBracket = await getPlayoffBracket(LEAGUE_ID);
+    bracket = resolveBracket(rawBracket, managerNameForRoster);
+  } catch (err) {
+    if (!(err instanceof SleeperAuthError)) throw err;
+    console.error(err.message);
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
@@ -169,6 +187,47 @@ export default async function StandingsPage() {
           </tbody>
         </table>
       </div>
+
+      {bracket.length > 0 && (
+        <section className="mt-8">
+          <h2 className="mb-1 text-lg font-semibold text-fg-primary">Current Playoff Bracket</h2>
+          <p className="mb-3 text-sm text-fg-secondary">
+            Seeded from current standings — updates as the regular season plays out.
+          </p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {bracket.map((match) => (
+              <div
+                key={match.matchNumber}
+                className="rounded-lg border border-surface-border bg-surface-card p-3"
+              >
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-page-standings">
+                  {match.roundLabel}
+                </p>
+                <div className="space-y-1 text-sm">
+                  <div
+                    className={`truncate ${
+                      match.winnerLabel === match.team1Label
+                        ? "font-semibold text-win"
+                        : "text-fg-primary"
+                    }`}
+                  >
+                    {match.team1Label}
+                  </div>
+                  <div
+                    className={`truncate ${
+                      match.winnerLabel === match.team2Label
+                        ? "font-semibold text-win"
+                        : "text-fg-primary"
+                    }`}
+                  >
+                    {match.team2Label}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

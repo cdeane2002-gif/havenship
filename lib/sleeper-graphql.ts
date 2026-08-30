@@ -107,6 +107,41 @@ export async function getMatchupLegs(leagueId: string, round: number): Promise<M
   return data.matchup_legs ?? [];
 }
 
+export interface BracketMatchFrom {
+  w?: number; // winner of match #
+  l?: number; // loser of match #
+}
+
+export interface BracketMatch {
+  m: number; // match number
+  r: number; // round
+  p?: number; // "place" this match decides — 1 = championship, 3 = 3rd place, 5 = 5th place
+  t1: number | null; // roster_id, null if not yet determined
+  t2: number | null;
+  t1_from?: BracketMatchFrom;
+  t2_from?: BracketMatchFrom;
+  w: number | null; // winner roster_id, null until played
+  l: number | null;
+}
+
+const PLAYOFF_BRACKET_QUERY = `
+  query($league_id: Snowflake!) {
+    league_playoff_bracket(league_id: $league_id)
+  }
+`;
+
+/** Current playoff bracket seeding/structure — populated as soon as the league is created
+ * (seeded from current standings while the regular season is still underway), not just once
+ * playoffs start. Matches with t1/t2 both null haven't had their earlier-round winner decided
+ * yet; use t1_from/t2_from to render "Winner of Match N" in the meantime. */
+export async function getPlayoffBracket(leagueId: string): Promise<BracketMatch[]> {
+  const data = await graphqlRequest<{ league_playoff_bracket: BracketMatch[] | null }>(
+    PLAYOFF_BRACKET_QUERY,
+    { league_id: leagueId }
+  );
+  return data.league_playoff_bracket ?? [];
+}
+
 export interface MatchupPair {
   matchup_id: number;
   round: number;
