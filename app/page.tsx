@@ -22,6 +22,14 @@ import { rankColorClass } from "@/lib/theme";
 import type { GameweekFile } from "@/lib/gameweek-schemas";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
+// Unlike Results/Best XI (forced dynamic automatically by reading searchParams), this page has
+// no dynamic API of its own — Next.js was statically prerendering it at build time and only
+// revalidating every 5 minutes via ISR, so the live matchup strip / playoff bracket could sit
+// on a stale snapshot from whenever the last build or regeneration happened, independent of
+// the auth token being correctly configured. Force real per-request rendering instead, same as
+// next dev already does — traffic is tiny (~12 users), so hitting Sleeper fresh every load costs nothing.
+export const dynamic = "force-dynamic";
+
 interface StandingsRow {
   roster: SleeperRoster;
   user: SleeperUser | null;

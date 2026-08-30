@@ -11,6 +11,11 @@ import { buildPlayerDictionaryWithFallback, type PlayerInfo } from "@/lib/player
 import { PlayerLink } from "@/components/PlayerLink";
 import type { SleeperTransaction } from "@/lib/types";
 
+// No dynamic API of its own (no searchParams), so this was statically prerendered with only a
+// 5-minute ISR window — same class of staleness bug as the Standings homepage. This page
+// depends on the current week's transactions being fresh, so force real per-request rendering.
+export const dynamic = "force-dynamic";
+
 const TYPE_LABELS: Record<string, string> = {
   waiver: "Waiver",
   free_agent: "Free Agent",
