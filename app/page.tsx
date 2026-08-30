@@ -1,9 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   LEAGUE_ID,
   avatarUrlForUser,
   getLeague,
   getRosters,
+  getSeasonState,
   getUsers,
   rosterPointsAgainst,
   rosterPointsFor,
@@ -13,7 +15,11 @@ import {
 } from "@/lib/sleeper";
 import { getPlayoffBracket, SleeperAuthError } from "@/lib/sleeper-graphql";
 import { resolveBracket, type ResolvedBracketMatch } from "@/lib/playoff-bracket";
+import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
+import { getLiveGameweekData } from "@/lib/gameweek-live";
+import { buildWeeklyHeadlines } from "@/lib/headlines";
 import { rankColorClass } from "@/lib/theme";
+import type { GameweekFile } from "@/lib/gameweek-schemas";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
 interface StandingsRow {
@@ -106,6 +112,27 @@ export default async function StandingsPage() {
     console.error(err.message);
   }
 
+  // Featured gameweek strip: the currently in-progress week if there is one, otherwise the
+  // most recently captured one — same "live if current, else latest committed" rule Results
+  // uses, so the homepage and Results page never disagree about what "this week" means.
+  const state = await getSeasonState();
+  const currentWeek = state?.week ?? null;
+  const capturedWeeks = getAvailableWeeks(league.season);
+  const availableWeeks = Array.from(
+    new Set(currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
+  ).sort((a, b) => a - b);
+  const featuredWeek = availableWeeks.length > 0 ? availableWeeks[availableWeeks.length - 1] : null;
+  const isLiveWeek = featuredWeek !== null && featuredWeek === currentWeek;
+
+  let featuredGameweek: GameweekFile | null = null;
+  if (featuredWeek !== null) {
+    featuredGameweek = isLiveWeek
+      ? (await getLiveGameweekData(LEAGUE_ID, league.season, featuredWeek)) ??
+        getGameweekData(league.season, featuredWeek)
+      : getGameweekData(league.season, featuredWeek);
+  }
+  const headlines = featuredGameweek ? buildWeeklyHeadlines(featuredGameweek) : [];
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
       <header className="mb-6 border-b-2 border-page-standings pb-3">
@@ -114,6 +141,93 @@ export default async function StandingsPage() {
           {league.name}
         </h1>
       </header>
+
+      {featuredGameweek && featuredGameweek.matchups.length > 0 && (
+        <section className="mb-8">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-fg-primary">GW{featuredWeek}</h2>
+              {isLiveWeek && (
+                <span className="flex items-center gap-1.5 text-xs font-medium text-page-results">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-page-results" />
+                  LIVE
+                </span>
+              )}
+            </div>
+            <a
+              href={`/results?week=${featuredWeek}`}
+              className="text-sm text-fg-secondary hover:text-fg-primary"
+            >
+              Full results →
+            </a>
+          </div>
+
+          <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+            {featuredGameweek.matchups.map((m) => {
+              const [a, b] = m.teams;
+              return (
+                <div
+                  key={m.matchup_id}
+                  className="w-56 shrink-0 rounded-lg border border-surface-border bg-surface-card p-3 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <Link
+                      href={`/teams/${a.roster_id}`}
+                      className={`min-w-0 truncate hover:underline ${
+                        !b || a.points >= b.points ? "font-semibold text-fg-primary" : "text-fg-secondary"
+                      }`}
+                    >
+                      {a.manager_name}
+                    </Link>
+                    <span className="shrink-0 font-mono tabular-nums text-fg-primary">
+                      {a.points.toFixed(2)}
+                    </span>
+                  </div>
+                  {b ? (
+                    <div className="mt-1 flex items-center justify-between gap-2">
+                      <Link
+                        href={`/teams/${b.roster_id}`}
+                        className={`min-w-0 truncate hover:underline ${
+                          b.points > a.points ? "font-semibold text-fg-primary" : "text-fg-secondary"
+                        }`}
+                      >
+                        {b.manager_name}
+                      </Link>
+                      <span className="shrink-0 font-mono tabular-nums text-fg-primary">
+                        {b.points.toFixed(2)}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-xs text-fg-muted">Bye week</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {headlines.length > 0 && (
+            <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+              {headlines.map((h) => (
+                <div
+                  key={h.label}
+                  className="rounded-lg border border-surface-border bg-surface-card px-3 py-2 text-xs"
+                >
+                  <span className="font-semibold uppercase tracking-wide text-fg-muted">
+                    {h.label}:{" "}
+                  </span>
+                  {h.href ? (
+                    <Link href={h.href} className="text-fg-secondary hover:underline">
+                      {h.text}
+                    </Link>
+                  ) : (
+                    <span className="text-fg-secondary">{h.text}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {isDrafting && (
         <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
@@ -168,7 +282,12 @@ export default async function StandingsPage() {
                       ) : (
                         <div className="h-7 w-7 shrink-0 rounded-full border border-surface-border bg-surface-row" />
                       )}
-                      <span className="truncate font-medium text-fg-primary">{name}</span>
+                      <Link
+                        href={`/teams/${row.roster.roster_id}`}
+                        className="truncate font-medium text-fg-primary hover:underline"
+                      >
+                        {name}
+                      </Link>
                     </div>
                   </td>
                   <td className="px-3 py-3 text-center font-mono tabular-nums text-fg-secondary">

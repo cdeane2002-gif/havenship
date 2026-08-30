@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LEAGUE_ID, avatarUrlForUser, getLeague, getSeasonState, getUsers } from "@/lib/sleeper";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
@@ -25,13 +26,14 @@ function TeamRow({
       ) : (
         <div className="h-8 w-8 shrink-0 rounded-full border border-surface-border bg-surface-row" />
       )}
-      <span
-        className={`min-w-0 flex-1 truncate text-sm font-medium ${
+      <Link
+        href={`/teams/${team.roster_id}`}
+        className={`min-w-0 flex-1 truncate text-sm font-medium hover:underline ${
           isWinner ? "text-fg-primary" : "text-fg-secondary"
         }`}
       >
         {team.manager_name}
-      </span>
+      </Link>
       <span
         className={`shrink-0 font-mono tabular-nums text-lg font-bold ${
           isWinner ? "text-win" : "text-fg-secondary"
