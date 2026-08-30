@@ -42,7 +42,6 @@ export type GameweekFile = z.infer<typeof GameweekFileSchema>;
 
 export const GameweekIndexSchema = z.object({
   league_id: z.string(),
-  season: z.string(),
-  captured_weeks: z.array(z.number()),
+  seasons: z.record(z.string(), z.array(z.number())),
 });
 export type GameweekIndex = z.infer<typeof GameweekIndexSchema>;

@@ -31,9 +31,11 @@ export interface MatchupLeg {
   // null while the gameweek is still in progress — Sleeper only computes this team total
   // once the round is complete. Sum each starter's individual score as a live fallback.
   points: number | null;
-  starters: string[];
-  players: string[];
-  player_map: Record<string, GraphQLPlayer>;
+  // Both observed null for some historical (already-final) rounds, not just live ones —
+  // treat as always-optional, not just a live-week quirk.
+  starters: string[] | null;
+  players: string[] | null;
+  player_map: Record<string, GraphQLPlayer> | null;
 }
 
 export class SleeperAuthError extends Error {

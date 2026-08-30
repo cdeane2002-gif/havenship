@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   GameweekFileSchema,
@@ -13,8 +13,7 @@ export function getAvailableWeeks(season: string): number[] {
   if (!existsSync(indexPath)) return [];
   try {
     const index = GameweekIndexSchema.parse(JSON.parse(readFileSync(indexPath, "utf-8")));
-    if (index.season !== season) return [];
-    return index.captured_weeks;
+    return index.seasons[season] ?? [];
   } catch {
     return [];
   }
@@ -41,4 +40,26 @@ export function getAllGameweekData(season: string): GameweekFile[] {
 // Guards against an empty/missing directory (e.g. before the first capture has ever run).
 export function gameweeksDirExists(): boolean {
   return existsSync(GAMEWEEKS_DIR) && readdirSync(GAMEWEEKS_DIR).length > 0;
+}
+
+/** Records a captured week against the shared index.json, across all seasons — used by both
+ * the daily capture script and the historical backfill script so they share one index. */
+export function recordCapturedWeek(leagueId: string, season: string, week: number): void {
+  const indexPath = join(GAMEWEEKS_DIR, "index.json");
+  let index: { league_id: string; seasons: Record<string, number[]> } = {
+    league_id: leagueId,
+    seasons: {},
+  };
+  if (existsSync(indexPath)) {
+    try {
+      index = GameweekIndexSchema.parse(JSON.parse(readFileSync(indexPath, "utf-8")));
+    } catch {
+      // Corrupt index — rebuild from scratch.
+    }
+  }
+  const weeks = index.seasons[season] ?? [];
+  if (!weeks.includes(week)) weeks.push(week);
+  weeks.sort((a, b) => a - b);
+  index.seasons[season] = weeks;
+  writeFileSync(indexPath, JSON.stringify(GameweekIndexSchema.parse(index), null, 2) + "\n");
 }

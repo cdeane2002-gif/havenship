@@ -13,7 +13,7 @@
 // lib/gameweek-builder.ts if re-adding: GameweekMatchup.report stays in the schema as
 // nullable so re-enabling later doesn't need a data migration.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   LEAGUE_ID,
@@ -26,7 +26,8 @@ import {
 } from "../lib/sleeper";
 import { getMatchupLegs } from "../lib/sleeper-graphql";
 import { buildMatchupsFromLegs } from "../lib/gameweek-builder";
-import { GameweekFileSchema, GameweekIndexSchema } from "../lib/gameweek-schemas";
+import { recordCapturedWeek } from "../lib/gameweek";
+import { GameweekFileSchema } from "../lib/gameweek-schemas";
 
 function parseWeekArg(): number | null {
   const arg = process.argv.find((a) => a.startsWith("--week="));
@@ -86,20 +87,8 @@ async function main() {
   writeFileSync(outPath, JSON.stringify(file, null, 2) + "\n");
   console.log(`Wrote ${outPath}`);
 
-  const indexPath = resolve(dataDir, "index.json");
-  let index = { league_id: LEAGUE_ID, season: league.season, captured_weeks: [] as number[] };
-  if (existsSync(indexPath)) {
-    try {
-      const existing = GameweekIndexSchema.parse(JSON.parse(readFileSync(indexPath, "utf-8")));
-      if (existing.season === league.season) index = existing;
-    } catch {
-      // Corrupt/mismatched index — rebuild from scratch for this season.
-    }
-  }
-  if (!index.captured_weeks.includes(week)) index.captured_weeks.push(week);
-  index.captured_weeks.sort((a, b) => a - b);
-  writeFileSync(indexPath, JSON.stringify(GameweekIndexSchema.parse(index), null, 2) + "\n");
-  console.log(`Updated ${indexPath}`);
+  recordCapturedWeek(LEAGUE_ID, league.season, week);
+  console.log(`Updated index.json`);
 }
 
 main().catch((err) => {

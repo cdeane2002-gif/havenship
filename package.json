@@ -9,6 +9,7 @@
     "lint": "eslint",
     "grades:generate": "tsx --env-file=.env.local scripts/generate-draft-grades.ts",
     "gameweek:capture": "tsx --env-file=.env.local scripts/capture-gameweek.ts",
+    "season:backfill": "tsx --env-file=.env.local scripts/backfill-season.ts",
     "dict:build": "tsx scripts/build-player-dictionary.ts"
   },
   "dependencies": {

@@ -1,0 +1,704 @@
+{
+  "league_id": "1266036109658308608",
+  "season": "2025",
+  "week": 13,
+  "captured_at": "2026-08-30T00:37:46.178Z",
+  "matchups": [
+    {
+      "matchup_id": 1,
+      "teams": [
+        {
+          "roster_id": 8,
+          "manager_name": "LiamCotter",
+          "points": 61,
+          "starters": [
+            {
+              "player_id": "2526",
+              "name": "Matheus Cunha",
+              "position": "F",
+              "club": "MUN",
+              "points": 0
+            },
+            {
+              "player_id": "1235",
+              "name": "Amad Diallo",
+              "position": "M",
+              "club": "MUN",
+              "points": 5.5
+            },
+            {
+              "player_id": "2410",
+              "name": "Bukayo Saka",
+              "position": "M",
+              "club": "ARS",
+              "points": 16
+            },
+            {
+              "player_id": "1863",
+              "name": "Alexis Mac Allister",
+              "position": "M",
+              "club": "LIV",
+              "points": 7
+            },
+            {
+              "player_id": "1874",
+              "name": "Virgil van Dijk",
+              "position": "D",
+              "club": "LIV",
+              "points": 10.5
+            },
+            {
+              "player_id": "1486",
+              "name": "Cristian Romero",
+              "position": "D",
+              "club": "ATM",
+              "points": 0
+            },
+            {
+              "player_id": "1512",
+              "name": "Micky van de Ven",
+              "position": "D",
+              "club": "TOT",
+              "points": -0.5
+            },
+            {
+              "player_id": "1516",
+              "name": "Guglielmo Vicario",
+              "position": "GK",
+              "club": "JUV",
+              "points": 0.75
+            },
+            {
+              "player_id": "1483",
+              "name": "Brennan Johnson",
+              "position": "M",
+              "club": "EVE",
+              "points": 0
+            },
+            {
+              "player_id": "1958",
+              "name": "Nathan Collins",
+              "position": "D",
+              "club": "BRE",
+              "points": 13.75
+            },
+            {
+              "player_id": "3778",
+              "name": "Iliman Ndiaye",
+              "position": "F",
+              "club": "EVE",
+              "points": 8
+            }
+          ]
+        },
+        {
+          "roster_id": 7,
+          "manager_name": "Patrickchess",
+          "points": 54.5,
+          "starters": [
+            {
+              "player_id": "2074",
+              "name": "João Pedro",
+              "position": "F",
+              "club": "CHE",
+              "points": 4
+            },
+            {
+              "player_id": "2403",
+              "name": "Declan Rice",
+              "position": "M",
+              "club": "ARS",
+              "points": 5
+            },
+            {
+              "player_id": "1781",
+              "name": "Bruno Guimarães",
+              "position": "M",
+              "club": "ARS",
+              "points": 4.5
+            },
+            {
+              "player_id": "1830",
+              "name": "Marcus Tavernier",
+              "position": "M",
+              "club": "BOU",
+              "points": 5
+            },
+            {
+              "player_id": "2183",
+              "name": "Marc Guéhi",
+              "position": "D",
+              "club": "MCI",
+              "points": 0.5
+            },
+            {
+              "player_id": "4143",
+              "name": "Maxence Lacroix",
+              "position": "D",
+              "club": "CHE",
+              "points": 2.5
+            },
+            {
+              "player_id": "1779",
+              "name": "Dan Burn",
+              "position": "D",
+              "club": "NEW",
+              "points": 16.75
+            },
+            {
+              "player_id": "11182",
+              "name": "Robin Roefs",
+              "position": "GK",
+              "club": "SUN",
+              "points": 5.25
+            },
+            {
+              "player_id": "1854",
+              "name": "Ryan Gravenberch",
+              "position": "M",
+              "club": "LIV",
+              "points": 2.5
+            },
+            {
+              "player_id": "1795",
+              "name": "Sandro Tonali",
+              "position": "M",
+              "club": "TOT",
+              "points": 0
+            },
+            {
+              "player_id": "3649",
+              "name": "Yankuba Minteh",
+              "position": "F",
+              "club": "BHA",
+              "points": 8.5
+            }
+          ]
+        }
+      ],
+      "report": null
+    },
+    {
+      "matchup_id": 2,
+      "teams": [
+        {
+          "roster_id": 5,
+          "manager_name": "roryosullivann",
+          "points": 94.5,
+          "starters": [
+            {
+              "player_id": "7733",
+              "name": "Hugo Ekitiké",
+              "position": "F",
+              "club": "LIV",
+              "points": 0
+            },
+            {
+              "player_id": "2707",
+              "name": "Mikel Merino",
+              "position": "M",
+              "club": "ARS",
+              "points": 15.5
+            },
+            {
+              "player_id": "2160",
+              "name": "Mohammed Kudus",
+              "position": "M",
+              "club": "TOT",
+              "points": 15
+            },
+            {
+              "player_id": "1834",
+              "name": "Dango Ouattara",
+              "position": "M",
+              "club": "BRE",
+              "points": 21
+            },
+            {
+              "player_id": "1901",
+              "name": "Wesley Fofana",
+              "position": "D",
+              "club": "CHE",
+              "points": 8.75
+            },
+            {
+              "player_id": "1090",
+              "name": "Matty Cash",
+              "position": "D",
+              "club": "AVL",
+              "points": 13
+            },
+            {
+              "player_id": "1845",
+              "name": "Ibrahima Konaté",
+              "position": "D",
+              "club": "RMA",
+              "points": 16.5
+            },
+            {
+              "player_id": "2016",
+              "name": "Jordan Pickford",
+              "position": "GK",
+              "club": "EVE",
+              "points": -1.5
+            },
+            {
+              "player_id": "1865",
+              "name": "Dominik Szoboszlai",
+              "position": "M",
+              "club": "LIV",
+              "points": 5
+            },
+            {
+              "player_id": "3153",
+              "name": "Omar Alderete",
+              "position": "D",
+              "club": "SUN",
+              "points": 0.25
+            },
+            {
+              "player_id": "2700",
+              "name": "Martín Zubimendi",
+              "position": "M",
+              "club": "ARS",
+              "points": 1
+            }
+          ]
+        },
+        {
+          "roster_id": 3,
+          "manager_name": "cilliandeane",
+          "points": 61.25,
+          "starters": [
+            {
+              "player_id": "5960",
+              "name": "Donyell Malen",
+              "position": "F",
+              "club": "ROM",
+              "points": 3
+            },
+            {
+              "player_id": "1654",
+              "name": "Alex Iwobi",
+              "position": "M",
+              "club": "FUL",
+              "points": 2
+            },
+            {
+              "player_id": "1712",
+              "name": "Phil Foden",
+              "position": "M",
+              "club": "MCI",
+              "points": 28.5
+            },
+            {
+              "player_id": "1714",
+              "name": "Jack Grealish",
+              "position": "M",
+              "club": "MCI",
+              "points": 4
+            },
+            {
+              "player_id": "1719",
+              "name": "Josko Gvardiol",
+              "position": "D",
+              "club": "MCI",
+              "points": 12.5
+            },
+            {
+              "player_id": "8738",
+              "name": "Adrien Truffert",
+              "position": "D",
+              "club": "BOU",
+              "points": 2.25
+            },
+            {
+              "player_id": "10511",
+              "name": "Dan Ballard",
+              "position": "D",
+              "club": "SUN",
+              "points": 8.25
+            },
+            {
+              "player_id": "1645",
+              "name": "Bernd Leno",
+              "position": "GK",
+              "club": "FUL",
+              "points": 0.75
+            },
+            {
+              "player_id": "2409",
+              "name": "Leandro Trossard",
+              "position": "M",
+              "club": "ARS",
+              "points": 0
+            },
+            {
+              "player_id": "2402",
+              "name": "William Saliba",
+              "position": "D",
+              "club": "ARS",
+              "points": 0
+            },
+            {
+              "player_id": "1922",
+              "name": "Cole Palmer",
+              "position": "M",
+              "club": "CHE",
+              "points": 0
+            }
+          ]
+        }
+      ],
+      "report": null
+    },
+    {
+      "matchup_id": 3,
+      "teams": [
+        {
+          "roster_id": 2,
+          "manager_name": "rorydeane",
+          "points": 100,
+          "starters": [
+            {
+              "player_id": "1963",
+              "name": "Bryan Mbeumo",
+              "position": "F",
+              "club": "MUN",
+              "points": 2.5
+            },
+            {
+              "player_id": "1213",
+              "name": "Bruno Fernandes",
+              "position": "M",
+              "club": "MUN",
+              "points": 27.5
+            },
+            {
+              "player_id": "2156",
+              "name": "Jarrod Bowen",
+              "position": "M",
+              "club": "WHU",
+              "points": -1
+            },
+            {
+              "player_id": "1716",
+              "name": "Jérémy Doku",
+              "position": "M",
+              "club": "MCI",
+              "points": 13.5
+            },
+            {
+              "player_id": "1494",
+              "name": "Pedro Porro",
+              "position": "D",
+              "club": "TOT",
+              "points": 11.25
+            },
+            {
+              "player_id": "2413",
+              "name": "Jurriën Timber",
+              "position": "D",
+              "club": "ARS",
+              "points": 8.75
+            },
+            {
+              "player_id": "4051",
+              "name": "Matthijs de Ligt",
+              "position": "D",
+              "club": "MUN",
+              "points": 5.25
+            },
+            {
+              "player_id": "2170",
+              "name": "Dean Henderson",
+              "position": "GK",
+              "club": "CRY",
+              "points": 6
+            },
+            {
+              "player_id": "1962",
+              "name": "Mikkel Damsgaard",
+              "position": "M",
+              "club": "BRE",
+              "points": 9.5
+            },
+            {
+              "player_id": "1789",
+              "name": "Lewis Hall",
+              "position": "D",
+              "club": "NEW",
+              "points": 15.75
+            },
+            {
+              "player_id": "3981",
+              "name": "Ismaïla Sarr",
+              "position": "F",
+              "club": "CRY",
+              "points": 1
+            }
+          ]
+        },
+        {
+          "roster_id": 1,
+          "manager_name": "DamardiacArrest_02",
+          "points": 77.5,
+          "starters": [
+            {
+              "player_id": "2193",
+              "name": "Jean-Philippe Mateta",
+              "position": "F",
+              "club": "CRY",
+              "points": 15.5
+            },
+            {
+              "player_id": "1218",
+              "name": "Casemiro",
+              "position": "M",
+              "club": "MIA",
+              "points": 11
+            },
+            {
+              "player_id": "1930",
+              "name": "Kevin Schade",
+              "position": "M",
+              "club": "BRE",
+              "points": 10
+            },
+            {
+              "player_id": "1011",
+              "name": "Morgan Gibbs-White",
+              "position": "M",
+              "club": "NFO",
+              "points": 5.5
+            },
+            {
+              "player_id": "2164",
+              "name": "Daniel Muñoz",
+              "position": "D",
+              "club": "CRY",
+              "points": -0.25
+            },
+            {
+              "player_id": "4884",
+              "name": "Nordi Mukiele",
+              "position": "D",
+              "club": "SUN",
+              "points": 6
+            },
+            {
+              "player_id": "1919",
+              "name": "Reece James",
+              "position": "D",
+              "club": "CHE",
+              "points": 19.25
+            },
+            {
+              "player_id": "4374",
+              "name": "Gianluigi Donnarumma",
+              "position": "GK",
+              "club": "MCI",
+              "points": 4.25
+            },
+            {
+              "player_id": "2071",
+              "name": "Danny Welbeck",
+              "position": "F",
+              "club": "CHE",
+              "points": 4
+            },
+            {
+              "player_id": "2173",
+              "name": "Tyrick Mitchell",
+              "position": "D",
+              "club": "CRY",
+              "points": -2.75
+            },
+            {
+              "player_id": "1721",
+              "name": "Erling Haaland",
+              "position": "F",
+              "club": "MCI",
+              "points": 6
+            }
+          ]
+        }
+      ],
+      "report": null
+    },
+    {
+      "matchup_id": 4,
+      "teams": [
+        {
+          "roster_id": 4,
+          "manager_name": "seanjordan44",
+          "points": 115.5,
+          "starters": [
+            {
+              "player_id": "1507",
+              "name": "Richarlison",
+              "position": "F",
+              "club": "TOT",
+              "points": 0.5
+            },
+            {
+              "player_id": "1806",
+              "name": "Elliot Anderson",
+              "position": "M",
+              "club": "MCI",
+              "points": 25.5
+            },
+            {
+              "player_id": "3041",
+              "name": "Yéremy Pino",
+              "position": "M",
+              "club": "CRY",
+              "points": 7.5
+            },
+            {
+              "player_id": "2520",
+              "name": "Pedro Neto",
+              "position": "M",
+              "club": "CHE",
+              "points": 3
+            },
+            {
+              "player_id": "3843",
+              "name": "Nikola Milenkovic",
+              "position": "D",
+              "club": "NFO",
+              "points": 0.75
+            },
+            {
+              "player_id": "5210",
+              "name": "Malick Thiaw",
+              "position": "D",
+              "club": "NEW",
+              "points": 30.25
+            },
+            {
+              "player_id": "1993",
+              "name": "James Tarkowski",
+              "position": "D",
+              "club": "EVE",
+              "points": 10.75
+            },
+            {
+              "player_id": "1097",
+              "name": "Emiliano Martínez",
+              "position": "GK",
+              "club": "AVL",
+              "points": 17.25
+            },
+            {
+              "player_id": "1091",
+              "name": "Morgan Rogers",
+              "position": "M",
+              "club": "CHE",
+              "points": 1.5
+            },
+            {
+              "player_id": "2415",
+              "name": "Martin Ødegaard",
+              "position": "M",
+              "club": "ARS",
+              "points": 2
+            },
+            {
+              "player_id": "4482",
+              "name": "Nick Woltemade",
+              "position": "F",
+              "club": "NEW",
+              "points": 17.5
+            }
+          ]
+        },
+        {
+          "roster_id": 6,
+          "manager_name": "gorgz123",
+          "points": 64.5,
+          "starters": [
+            {
+              "player_id": "4049",
+              "name": "Evanilson",
+              "position": "F",
+              "club": "BOU",
+              "points": 4
+            },
+            {
+              "player_id": "2165",
+              "name": "Eberechi Eze",
+              "position": "M",
+              "club": "ARS",
+              "points": 4
+            },
+            {
+              "player_id": "1722",
+              "name": "Bernardo Silva",
+              "position": "M",
+              "club": "RMA",
+              "points": -1
+            },
+            {
+              "player_id": "1886",
+              "name": "Moisés Caicedo",
+              "position": "M",
+              "club": "CHE",
+              "points": -5.5
+            },
+            {
+              "player_id": "2168",
+              "name": "Chris Richards",
+              "position": "D",
+              "club": "CRY",
+              "points": 9
+            },
+            {
+              "player_id": "1705",
+              "name": "Rúben Dias",
+              "position": "D",
+              "club": "MCI",
+              "points": -0.75
+            },
+            {
+              "player_id": "1826",
+              "name": "Marcos Senesi",
+              "position": "D",
+              "club": "TOT",
+              "points": 8.75
+            },
+            {
+              "player_id": "2399",
+              "name": "David Raya",
+              "position": "GK",
+              "club": "ARS",
+              "points": 4
+            },
+            {
+              "player_id": "1823",
+              "name": "Antoine Semenyo",
+              "position": "F",
+              "club": "MCI",
+              "points": 9
+            },
+            {
+              "player_id": "3213",
+              "name": "Kiernan Dewsbury-Hall",
+              "position": "M",
+              "club": "EVE",
+              "points": 14
+            },
+            {
+              "player_id": "3667",
+              "name": "Igor Thiago",
+              "position": "F",
+              "club": "BRE",
+              "points": 21
+            }
+          ]
+        }
+      ],
+      "report": null
+    }
+  ]
+}

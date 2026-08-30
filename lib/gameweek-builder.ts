@@ -11,8 +11,8 @@ export function buildTeamFromLeg(
   managerName: string,
   weekStats: Record<string, Record<string, number>>
 ): GameweekTeam {
-  const starters = leg.starters.map((playerId) => {
-    const info = leg.player_map[playerId];
+  const starters = (leg.starters ?? []).map((playerId) => {
+    const info = leg.player_map?.[playerId];
     const stats = weekStats[playerId];
     return {
       player_id: playerId,
