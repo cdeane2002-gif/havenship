@@ -2,6 +2,7 @@ import { LEAGUE_ID } from "@/lib/sleeper";
 import {
   biggestWinMargins,
   careerWinLoss,
+  favouritePlayers,
   getAllSeasonsData,
   longestWinStreaks,
   topSeasonPoints,
@@ -9,6 +10,7 @@ import {
   worstSingleWeekXI,
 } from "@/lib/records";
 import { rankColorClass } from "@/lib/theme";
+import { PlayerLink } from "@/components/PlayerLink";
 
 export default async function RecordsPage() {
   const seasons = await getAllSeasonsData(LEAGUE_ID);
@@ -19,6 +21,7 @@ export default async function RecordsPage() {
   const singleWeekHighs = topSingleWeekScores(seasons, 5);
   const singleWeekLows = worstSingleWeekXI(seasons, 1);
   const winMargins = biggestWinMargins(seasons, 3);
+  const favourites = favouritePlayers(seasons, 2);
 
   const seasonLabels = seasons.map((s) => s.season).join(", ");
 
@@ -115,6 +118,37 @@ export default async function RecordsPage() {
               value: e.points.toFixed(2),
             }))}
           />
+        )}
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-1 text-lg font-semibold text-fg-primary">Favourite Player</h2>
+        <p className="mb-3 text-sm text-fg-secondary">
+          Each manager&apos;s highest cumulative points-scorer over the last two seasons.
+        </p>
+        {favourites.length === 0 ? (
+          <EmptyNote text="No gameweeks captured yet — check back once the first one is complete." />
+        ) : (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {favourites.map((f) => (
+              <div
+                key={f.userId}
+                className="flex items-center justify-between gap-3 rounded-lg border border-surface-border bg-surface-card p-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-xs text-fg-muted">{f.managerName}</p>
+                  <PlayerLink
+                    playerId={f.playerId}
+                    name={f.playerName}
+                    className="font-medium text-fg-primary"
+                  />
+                </div>
+                <span className="shrink-0 font-mono tabular-nums font-semibold text-fg-primary">
+                  {f.points.toFixed(2)}
+                </span>
+              </div>
+            ))}
+          </div>
         )}
       </section>
 

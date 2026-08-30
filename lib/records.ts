@@ -198,6 +198,82 @@ export function worstSingleWeekXI(seasons: SeasonRecordsData[], limit = 10): Sin
     .slice(0, limit);
 }
 
+export interface FavouritePlayerEntry {
+  userId: string;
+  managerName: string;
+  playerId: string;
+  playerName: string;
+  points: number;
+}
+
+/**
+ * Each manager's single highest cumulative points-scorer, summed across their starts over
+ * the most recent `seasonCount` seasons (default 2, per the "last two years" ask) — not
+ * all-time, unlike the rest of this file's records. Joined by owner_id (not roster_id),
+ * since a manager's roster_id/team name can change season to season but they're still the
+ * same person; duplicate players across different managers are expected and fine.
+ */
+export function favouritePlayers(
+  seasons: SeasonRecordsData[],
+  seasonCount = 2
+): FavouritePlayerEntry[] {
+  const recentSeasons = seasons.slice(0, seasonCount);
+  const pointsByUserPlayer = new Map<string, Map<string, { name: string; points: number }>>();
+  const managerNameByUser = new Map<string, string>();
+
+  // Oldest-first so the most recent team name wins for display, same as careerWinLoss.
+  const oldestFirst = [...recentSeasons].reverse();
+  for (const s of oldestFirst) {
+    const usersById = new Map(s.users.map((u) => [u.user_id, u]));
+    const ownerByRosterId = new Map(s.rosters.map((r) => [r.roster_id, r.owner_id]));
+
+    for (const gw of getAllGameweekData(s.season)) {
+      for (const matchup of gw.matchups) {
+        for (const team of matchup.teams) {
+          const ownerId = ownerByRosterId.get(team.roster_id);
+          if (!ownerId) continue;
+
+          const user = usersById.get(ownerId);
+          managerNameByUser.set(ownerId, user ? teamNameForUser(user) : team.manager_name);
+
+          let playerPoints = pointsByUserPlayer.get(ownerId);
+          if (!playerPoints) {
+            playerPoints = new Map();
+            pointsByUserPlayer.set(ownerId, playerPoints);
+          }
+          for (const starter of team.starters) {
+            const existing = playerPoints.get(starter.player_id);
+            if (existing) {
+              existing.points += starter.points;
+            } else {
+              playerPoints.set(starter.player_id, { name: starter.name, points: starter.points });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const results: FavouritePlayerEntry[] = [];
+  for (const [userId, playerPoints] of pointsByUserPlayer.entries()) {
+    let best: { playerId: string; name: string; points: number } | null = null;
+    for (const [playerId, v] of playerPoints.entries()) {
+      if (!best || v.points > best.points) best = { playerId, name: v.name, points: v.points };
+    }
+    if (!best) continue;
+    results.push({
+      userId,
+      managerName: managerNameByUser.get(userId) ?? "Unknown",
+      playerId: best.playerId,
+      playerName: best.name,
+      points: best.points,
+    });
+  }
+
+  results.sort((a, b) => a.managerName.localeCompare(b.managerName));
+  return results;
+}
+
 export interface WinMarginEntry {
   season: string;
   week: number;
