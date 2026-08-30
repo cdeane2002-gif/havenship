@@ -3,6 +3,12 @@
 // never change, so this is a one-time run per season — not part of the daily automation.
 //
 // Run manually: npm run season:backfill -- --season=2025
+// Optional: --start-week=5 if the league didn't actually start until partway through the
+// real EPL season (e.g. formed mid-season) — round numbers here ARE real EPL gameweek
+// numbers (confirmed: the same number feeds getPlayerStatsForWeek), and Sleeper can still
+// return matchup_legs data for rounds before a league's actual first played week (default/
+// placeholder state, not real manager decisions) — skip those explicitly rather than
+// capturing weeks that never really happened for this league.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -27,8 +33,16 @@ function parseSeasonArg(): string {
   return arg.split("=")[1];
 }
 
+function parseStartWeekArg(): number {
+  const arg = process.argv.find((a) => a.startsWith("--start-week="));
+  if (!arg) return 1;
+  const n = Number(arg.split("=")[1]);
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+}
+
 async function main() {
   const targetSeason = parseSeasonArg();
+  const startWeek = parseStartWeekArg();
 
   const chain = await getLeagueSeasonChain(LEAGUE_ID);
   const target = chain.find((s) => s.league.season === targetSeason);
@@ -38,7 +52,9 @@ async function main() {
     );
   }
   const leagueId = target.league.league_id;
-  console.log(`Backfilling ${targetSeason} (league_id ${leagueId})...`);
+  console.log(
+    `Backfilling ${targetSeason} (league_id ${leagueId}) from week ${startWeek}...`
+  );
 
   const [rosters, users] = await Promise.all([getRosters(leagueId), getUsers(leagueId)]);
   const usersById = new Map(users.map((u) => [u.user_id, u]));
@@ -53,7 +69,7 @@ async function main() {
   mkdirSync(dataDir, { recursive: true });
 
   let captured = 0;
-  for (let round = 1; round <= MAX_ROUNDS; round++) {
+  for (let round = startWeek; round <= MAX_ROUNDS; round++) {
     const legs = await getMatchupLegs(leagueId, round);
     if (legs.length === 0) {
       console.log(`Round ${round}: no data — stopping (season had ${captured} rounds).`);
