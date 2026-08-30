@@ -99,7 +99,10 @@ export function matchFplElement(
 }
 
 export async function fetchFplData(): Promise<FplData> {
-  const res = await fetch("https://fantasy.premierleague.com/api/bootstrap-static/");
+  const res = await fetch("https://fantasy.premierleague.com/api/bootstrap-static/", {
+    next: { revalidate: 60 * 60 }, // 1 hour — this was previously only called from offline
+    // scripts (no caching needed); now also used from live pages (player profile fixtures).
+  });
   if (!res.ok) throw new Error(`FPL bootstrap-static failed: ${res.status}`);
   const body = (await res.json()) as FplData;
   return { elements: body.elements, teams: body.teams };

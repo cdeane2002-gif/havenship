@@ -1,6 +1,7 @@
 import { LEAGUE_ID, avatarUrlForUser, getLeague, getSeasonState, getUsers } from "@/lib/sleeper";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
+import { PlayerLink } from "@/components/PlayerLink";
 import type { GameweekTeam } from "@/lib/gameweek-schemas";
 
 function TeamRow({
@@ -48,9 +49,9 @@ function StartersList({ team }: { team: GameweekTeam }) {
     <div className="grid grid-cols-1 gap-0.5">
       {sorted.map((s) => (
         <div key={s.player_id} className="flex items-center justify-between gap-2 text-xs">
-          <span className="min-w-0 flex-1 truncate text-fg-secondary">
-            <span className="mr-1.5 inline-block w-6 text-fg-muted">{s.position}</span>
-            {s.name}
+          <span className="flex min-w-0 flex-1 items-center text-fg-secondary">
+            <span className="mr-1.5 inline-block w-6 shrink-0 text-fg-muted">{s.position}</span>
+            <PlayerLink playerId={s.player_id} name={s.name} className="text-fg-secondary" />
           </span>
           <span className="shrink-0 font-mono tabular-nums text-fg-secondary">
             {s.points.toFixed(2)}

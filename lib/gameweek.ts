@@ -8,6 +8,19 @@ import {
 
 const GAMEWEEKS_DIR = join(process.cwd(), "data", "gameweeks");
 
+/** Every season that has at least one captured gameweek — newest first is not guaranteed,
+ * callers should sort if order matters. */
+export function getAllSeasons(): string[] {
+  const indexPath = join(GAMEWEEKS_DIR, "index.json");
+  if (!existsSync(indexPath)) return [];
+  try {
+    const index = GameweekIndexSchema.parse(JSON.parse(readFileSync(indexPath, "utf-8")));
+    return Object.keys(index.seasons);
+  } catch {
+    return [];
+  }
+}
+
 export function getAvailableWeeks(season: string): number[] {
   const indexPath = join(GAMEWEEKS_DIR, "index.json");
   if (!existsSync(indexPath)) return [];

@@ -7,7 +7,8 @@ import {
   getUsers,
   teamNameForUser,
 } from "@/lib/sleeper";
-import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
+import { buildPlayerDictionaryWithFallback, type PlayerInfo } from "@/lib/player-dictionary";
+import { PlayerLink } from "@/components/PlayerLink";
 import type { SleeperTransaction } from "@/lib/types";
 
 const TYPE_LABELS: Record<string, string> = {
@@ -16,9 +17,33 @@ const TYPE_LABELS: Record<string, string> = {
   trade: "Trade",
 };
 
-function playerLabel(playerId: string, dict: Map<string, { name: string; position: string; club: string }>) {
+function PlayerTransferLine({
+  playerId,
+  dict,
+  sign,
+  colorClass,
+}: {
+  playerId: string;
+  dict: Map<string, PlayerInfo>;
+  sign: string;
+  colorClass: string;
+}) {
   const info = dict.get(playerId);
-  return info ? `${info.name} (${info.position}, ${info.club})` : `Player #${playerId}`;
+  return (
+    <p className={`flex items-center gap-1 ${colorClass}`}>
+      <span className="shrink-0">{sign}</span>
+      {info ? (
+        <>
+          <PlayerLink playerId={playerId} name={info.name} className={colorClass} />
+          <span className="shrink-0 text-xs opacity-80">
+            ({info.position}, {info.club})
+          </span>
+        </>
+      ) : (
+        <span>Player #{playerId}</span>
+      )}
+    </p>
+  );
 }
 
 export default async function TransfersPage() {
@@ -102,14 +127,22 @@ export default async function TransfersPage() {
                 </div>
                 <div className="space-y-0.5 text-sm">
                   {adds.map((playerId) => (
-                    <p key={`add-${playerId}`} className="text-win">
-                      + {playerLabel(playerId, playerDict)}
-                    </p>
+                    <PlayerTransferLine
+                      key={`add-${playerId}`}
+                      playerId={playerId}
+                      dict={playerDict}
+                      sign="+"
+                      colorClass="text-win"
+                    />
                   ))}
                   {drops.map((playerId) => (
-                    <p key={`drop-${playerId}`} className="text-loss">
-                      − {playerLabel(playerId, playerDict)}
-                    </p>
+                    <PlayerTransferLine
+                      key={`drop-${playerId}`}
+                      playerId={playerId}
+                      dict={playerDict}
+                      sign="−"
+                      colorClass="text-loss"
+                    />
                   ))}
                 </div>
               </li>

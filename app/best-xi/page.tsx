@@ -2,6 +2,7 @@ import { LEAGUE_ID, getLeague, getSeasonState } from "@/lib/sleeper";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
 import { computeBestXI } from "@/lib/best-xi";
+import { PlayerLink } from "@/components/PlayerLink";
 
 export default async function BestXIPage({
   searchParams,
@@ -119,13 +120,13 @@ export default async function BestXIPage({
                   {slot.label}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1 truncate text-sm font-medium text-fg-primary">
+                  <div className="flex items-center gap-1 text-sm font-medium text-fg-primary">
                     {isTopScorer && (
                       <span className="text-gold" title="Top scorer this gameweek" aria-hidden>
                         ★
                       </span>
                     )}
-                    <span className="truncate">{slot.candidate.name}</span>
+                    <PlayerLink playerId={slot.candidate.player_id} name={slot.candidate.name} />
                     <span className="shrink-0 text-xs font-normal text-fg-secondary">
                       {slot.candidate.club}
                     </span>
