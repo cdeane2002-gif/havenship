@@ -283,7 +283,7 @@ export default async function TeamProfilePage({
                 className="flex items-center justify-between gap-2 border-b border-surface-border/60 bg-surface-card px-4 py-2.5 text-sm last:border-0 even:bg-surface-row/30"
               >
                 <a
-                  href={`/results?week=${h.week}`}
+                  href={`/results?season=${h.season}&week=${h.week}`}
                   className="flex min-w-0 flex-1 items-center gap-2 hover:underline"
                 >
                   <span className="shrink-0 text-fg-primary">GW{h.week}</span>

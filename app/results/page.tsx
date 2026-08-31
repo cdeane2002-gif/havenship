@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { LEAGUE_ID, avatarUrlForUser, getLeague, getSeasonState, getUsers } from "@/lib/sleeper";
-import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
+import { getAllSeasons, getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
 import { PlayerLink } from "@/components/PlayerLink";
+import { SeasonSelect } from "@/components/SeasonSelect";
 import type { GameweekTeam } from "@/lib/gameweek-schemas";
 
 function TeamRow({
@@ -86,12 +87,9 @@ export default async function ResultsPage({
   const state = await getSeasonState();
   const currentWeek = state?.week ?? null;
 
-  const capturedWeeks = getAvailableWeeks(league.season);
-  const availableWeeks = Array.from(
-    new Set(currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
-  ).sort((a, b) => a - b);
+  const seasons = getAllSeasons().sort((a, b) => b.localeCompare(a));
 
-  if (availableWeeks.length === 0) {
+  if (seasons.length === 0 && !currentWeek) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
         <header className="mb-6 border-b-2 border-page-results pb-3">
@@ -108,19 +106,45 @@ export default async function ResultsPage({
   }
 
   const params = await searchParams;
+  const requestedSeason = Array.isArray(params.season) ? params.season[0] : params.season;
+  const selectedSeason =
+    requestedSeason && seasons.includes(requestedSeason) ? requestedSeason : league.season;
+  const isCurrentSeason = selectedSeason === league.season;
+
+  const capturedWeeks = getAvailableWeeks(selectedSeason);
+  const availableWeeks = Array.from(
+    new Set(isCurrentSeason && currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
+  ).sort((a, b) => a - b);
+
+  if (availableWeeks.length === 0) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
+        <header className="mb-6 border-b-2 border-page-results pb-3">
+          <SeasonSelect seasons={seasons} selectedSeason={selectedSeason} />
+          <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+            Results
+          </h1>
+        </header>
+        <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
+          No gameweeks captured for the {selectedSeason} season.
+        </div>
+      </div>
+    );
+  }
+
   const requestedWeek = Array.isArray(params.week) ? params.week[0] : params.week;
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const week = availableWeeks.includes(parsedWeek) ? parsedWeek : availableWeeks[availableWeeks.length - 1];
 
-  const isLiveWeek = week === currentWeek;
+  const isLiveWeek = isCurrentSeason && week === currentWeek;
   const gameweek = isLiveWeek
-    ? (await getLiveGameweekData(LEAGUE_ID, league.season, week)) ?? getGameweekData(league.season, week)
-    : getGameweekData(league.season, week);
+    ? (await getLiveGameweekData(LEAGUE_ID, selectedSeason, week)) ?? getGameweekData(selectedSeason, week)
+    : getGameweekData(selectedSeason, week);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
       <header className="mb-6 border-b-2 border-page-results pb-3">
-        <p className="text-sm font-medium text-page-results">{league.season} Season</p>
+        <SeasonSelect seasons={seasons} selectedSeason={selectedSeason} />
         <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">Results</h1>
       </header>
 
@@ -128,7 +152,7 @@ export default async function ResultsPage({
         {availableWeeks.map((w) => (
           <a
             key={w}
-            href={`/results?week=${w}`}
+            href={`/results?season=${selectedSeason}&week=${w}`}
             className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
               w === week
                 ? "bg-page-results/20 text-page-results"
