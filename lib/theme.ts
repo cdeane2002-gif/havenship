@@ -9,3 +9,18 @@ export function rankColorClass(rank: number): string {
   if (rank === 3) return "text-bronze";
   return "text-fg-muted";
 }
+
+/** Background color for a single result dot in a "form" strip (last N results). */
+export function formDotColorClass(result: "W" | "L" | "T"): string {
+  if (result === "W") return "bg-win";
+  if (result === "L") return "bg-loss";
+  return "bg-draw";
+}
+
+/** Last `count` results from a roster's metadata.record string (chronological, oldest to
+ * newest — matches how Sleeper appends to it week over week), most recent last. */
+export function recentForm(record: string | undefined, count = 5): ("W" | "L" | "T")[] {
+  if (!record) return [];
+  const chars = record.split("").filter((c): c is "W" | "L" | "T" => c === "W" || c === "L" || c === "T");
+  return chars.slice(-count);
+}

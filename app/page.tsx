@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Fragment } from "react";
 import Link from "next/link";
 import {
   LEAGUE_ID,
@@ -10,15 +10,17 @@ import {
   rosterPointsAgainst,
   rosterPointsFor,
   rosterRecord,
-  rosterStreak,
   teamNameForUser,
 } from "@/lib/sleeper";
 import { getPlayoffBracket, SleeperAuthError } from "@/lib/sleeper-graphql";
 import { resolveBracket, type ResolvedBracketMatch } from "@/lib/playoff-bracket";
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
+import { getRoundFixtures } from "@/lib/next-fixture";
 import { buildWeeklyHeadlines } from "@/lib/headlines";
-import { rankColorClass } from "@/lib/theme";
+import { recentForm } from "@/lib/theme";
+import { StandingsRow } from "@/components/StandingsRow";
+import { FeaturedWeekStrip } from "@/components/FeaturedWeekStrip";
 import type { GameweekFile } from "@/lib/gameweek-schemas";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
@@ -30,7 +32,7 @@ import type { SleeperRoster, SleeperUser } from "@/lib/types";
 // next dev already does — traffic is tiny (~12 users), so hitting Sleeper fresh every load costs nothing.
 export const dynamic = "force-dynamic";
 
-interface StandingsRow {
+interface StandingsRowData {
   roster: SleeperRoster;
   user: SleeperUser | null;
   wins: number;
@@ -38,13 +40,12 @@ interface StandingsRow {
   ties: number;
   pointsFor: number;
   pointsAgainst: number;
-  streak: string | null;
 }
 
-function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): StandingsRow[] {
+function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): StandingsRowData[] {
   const usersById = new Map(users.map((u) => [u.user_id, u]));
 
-  const rows: StandingsRow[] = rosters.map((roster) => {
+  const rows: StandingsRowData[] = rosters.map((roster) => {
     const { wins, losses, ties } = rosterRecord(roster);
     return {
       roster,
@@ -54,7 +55,6 @@ function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): Standin
       ties,
       pointsFor: rosterPointsFor(roster),
       pointsAgainst: rosterPointsAgainst(roster),
-      streak: rosterStreak(roster),
     };
   });
 
@@ -65,22 +65,6 @@ function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): Standin
   });
 
   return rows;
-}
-
-function streakBadge(streak: string | null) {
-  if (!streak) return null;
-  const isWin = streak.endsWith("W");
-  const isLoss = streak.endsWith("L");
-  const color = isWin
-    ? "bg-win/15 text-win"
-    : isLoss
-      ? "bg-loss/15 text-loss"
-      : "bg-draw/15 text-draw";
-  return (
-    <span className={`inline-block rounded px-1.5 py-0.5 text-[11px] font-semibold ${color}`}>
-      {streak}
-    </span>
-  );
 }
 
 export default async function StandingsPage() {
@@ -140,6 +124,10 @@ export default async function StandingsPage() {
       : getGameweekData(league.season, featuredWeek);
   }
   const headlines = featuredGameweek ? buildWeeklyHeadlines(featuredGameweek) : [];
+  const nextWeek = featuredWeek !== null ? featuredWeek + 1 : null;
+  const nextFixtures = nextWeek !== null ? await getRoundFixtures(nextWeek) : [];
+
+  const playoffCutoff = league.settings.playoff_teams;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
@@ -170,48 +158,11 @@ export default async function StandingsPage() {
             </a>
           </div>
 
-          <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-            {featuredGameweek.matchups.map((m) => {
-              const [a, b] = m.teams;
-              return (
-                <div
-                  key={m.matchup_id}
-                  className="w-56 shrink-0 rounded-lg border border-surface-border bg-surface-card p-3 text-sm"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <Link
-                      href={`/teams/${a.roster_id}`}
-                      className={`min-w-0 truncate hover:underline ${
-                        !b || a.points >= b.points ? "font-semibold text-fg-primary" : "text-fg-secondary"
-                      }`}
-                    >
-                      {a.manager_name}
-                    </Link>
-                    <span className="shrink-0 font-mono tabular-nums text-fg-primary">
-                      {a.points.toFixed(2)}
-                    </span>
-                  </div>
-                  {b ? (
-                    <div className="mt-1 flex items-center justify-between gap-2">
-                      <Link
-                        href={`/teams/${b.roster_id}`}
-                        className={`min-w-0 truncate hover:underline ${
-                          b.points > a.points ? "font-semibold text-fg-primary" : "text-fg-secondary"
-                        }`}
-                      >
-                        {b.manager_name}
-                      </Link>
-                      <span className="shrink-0 font-mono tabular-nums text-fg-primary">
-                        {b.points.toFixed(2)}
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="mt-1 text-xs text-fg-muted">Bye week</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <FeaturedWeekStrip
+            matchups={featuredGameweek.matchups}
+            nextWeek={nextWeek}
+            nextFixtures={nextFixtures}
+          />
 
           {headlines.length > 0 && (
             <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
@@ -251,16 +202,18 @@ export default async function StandingsPage() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-surface-border">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-surface-border">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
               <th className="px-3 py-2 font-medium">#</th>
               <th className="px-3 py-2 font-medium">Team</th>
               <th className="px-3 py-2 text-center font-medium">W-L-D</th>
               <th className="px-3 py-2 text-right font-medium">PF</th>
-              <th className="hidden px-3 py-2 text-right font-medium sm:table-cell">PA</th>
-              <th className="px-3 py-2 text-right font-medium">Strk</th>
+              <th className="px-3 py-2 text-right font-medium">PA</th>
+              <th className="px-3 py-2 text-right font-medium">Diff</th>
+              <th className="px-3 py-2 text-right font-medium">Avg</th>
+              <th className="px-3 py-2 text-right font-medium">Form</th>
             </tr>
           </thead>
           <tbody>
@@ -269,51 +222,37 @@ export default async function StandingsPage() {
               const name = row.user ? teamNameForUser(row.user) : `Roster ${row.roster.roster_id}`;
               const avatarUrl = row.user ? avatarUrlForUser(row.user) : null;
               return (
-                <tr
-                  key={row.roster.roster_id}
-                  className="border-b border-surface-border/60 last:border-0 even:bg-surface-row/40 hover:bg-surface-row/60"
-                >
-                  <td className={`px-3 py-3 font-mono font-semibold ${rankColorClass(rank)}`}>
-                    {rank}
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="flex items-center gap-2.5">
-                      {avatarUrl ? (
-                        <Image
-                          src={avatarUrl}
-                          alt=""
-                          width={28}
-                          height={28}
-                          className="h-7 w-7 shrink-0 rounded-full border border-surface-border bg-surface-row"
-                          unoptimized
-                        />
-                      ) : (
-                        <div className="h-7 w-7 shrink-0 rounded-full border border-surface-border bg-surface-row" />
-                      )}
-                      <Link
-                        href={`/teams/${row.roster.roster_id}`}
-                        className="truncate font-medium text-fg-primary hover:underline"
-                      >
-                        {name}
-                      </Link>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 text-center font-mono tabular-nums text-fg-secondary">
-                    {row.wins}-{row.losses}-{row.ties}
-                  </td>
-                  <td className="px-3 py-3 text-right font-mono tabular-nums font-semibold text-fg-primary">
-                    {row.pointsFor.toFixed(2)}
-                  </td>
-                  <td className="hidden px-3 py-3 text-right font-mono tabular-nums text-fg-secondary sm:table-cell">
-                    {row.pointsAgainst.toFixed(2)}
-                  </td>
-                  <td className="px-3 py-3 text-right">{streakBadge(row.streak)}</td>
-                </tr>
+                <Fragment key={row.roster.roster_id}>
+                  <StandingsRow
+                    rosterId={row.roster.roster_id}
+                    rank={rank}
+                    name={name}
+                    avatarUrl={avatarUrl}
+                    wins={row.wins}
+                    losses={row.losses}
+                    ties={row.ties}
+                    pointsFor={row.pointsFor}
+                    pointsAgainst={row.pointsAgainst}
+                    form={recentForm(row.roster.metadata?.record)}
+                  />
+                  {rank === playoffCutoff && rank < rows.length && (
+                    <tr aria-hidden>
+                      <td colSpan={8} className="border-b-2 border-dashed border-page-standings/60 p-0">
+                        <span className="sr-only">Playoff cutoff</span>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
           </tbody>
         </table>
       </div>
+      {playoffCutoff > 0 && playoffCutoff < rows.length && (
+        <p className="mt-2 text-xs text-fg-muted">
+          Dashed line marks the playoff cutoff — top {playoffCutoff} qualify.
+        </p>
+      )}
 
       {bracket.length > 0 && (
         <section className="mt-8">
