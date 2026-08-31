@@ -14,7 +14,9 @@ import {
 } from "@/lib/sleeper";
 import {
   getArchenemy,
+  getClosestWin,
   getFavouriteOpponent,
+  getHero,
   getLeastFavouriteOpponent,
   getTeamMatchHistory,
 } from "@/lib/team-profile";
@@ -79,6 +81,8 @@ export default async function TeamProfilePage({
   const favouriteOpponent = getFavouriteOpponent(rosterId);
   const leastFavouriteOpponent = getLeastFavouriteOpponent(rosterId);
   const archenemy = getArchenemy(rosterId);
+  const hero = getHero(rosterId);
+  const nearly = getClosestWin(rosterId);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
@@ -125,6 +129,54 @@ export default async function TeamProfilePage({
           <p className="text-xs uppercase tracking-wide text-fg-muted">Points Against</p>
           <p className="mt-1 font-mono text-lg font-bold text-fg-primary">{pointsAgainst.toFixed(2)}</p>
         </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-fg-primary">Showcase</h2>
+        {!hero && !nearly ? (
+          <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
+            No captured matches yet — highlights build up as gameweeks are played.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Hero</p>
+              {hero ? (
+                <>
+                  <PlayerLink
+                    playerId={hero.playerId}
+                    name={hero.playerName}
+                    className="mt-1 font-semibold text-fg-primary"
+                  />
+                  <p className="text-xs text-fg-muted">
+                    {hero.points.toFixed(2)} pts · GW{hero.week}, {hero.season}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Nearly</p>
+              {nearly ? (
+                <>
+                  <Link
+                    href={`/teams/${nearly.opponentRosterId}`}
+                    className="mt-1 block truncate font-semibold text-fg-primary hover:underline"
+                  >
+                    vs {nearly.opponentName}
+                  </Link>
+                  <p className="text-xs text-fg-muted">
+                    Won by {nearly.margin.toFixed(2)} ({nearly.points.toFixed(2)}–
+                    {nearly.opponentPoints.toFixed(2)}) · GW{nearly.week}, {nearly.season}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="mb-8">

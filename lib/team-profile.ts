@@ -138,3 +138,75 @@ export function getArchenemy(rosterId: number): ArchenemyEntry | null {
   }
   return best;
 }
+
+export interface HeroEntry {
+  season: string;
+  week: number;
+  playerId: string;
+  playerName: string;
+  points: number;
+}
+
+/** The single highest individual gameweek score by any of this roster's OWN starters, ever —
+ * not the team total, one player's line in one week. null with no captured matches yet. */
+export function getHero(rosterId: number): HeroEntry | null {
+  let best: HeroEntry | null = null;
+
+  for (const season of getAllSeasons()) {
+    for (const gw of getAllGameweekData(season)) {
+      for (const matchup of gw.matchups) {
+        const mine = matchup.teams.find((t) => t.roster_id === rosterId);
+        if (!mine) continue;
+
+        for (const starter of mine.starters) {
+          if (!best || starter.points > best.points) {
+            best = {
+              season,
+              week: gw.week,
+              playerId: starter.player_id,
+              playerName: starter.name,
+              points: starter.points,
+            };
+          }
+        }
+      }
+    }
+  }
+
+  return best;
+}
+
+export interface NearlyEntry {
+  season: string;
+  week: number;
+  opponentRosterId: number;
+  opponentName: string;
+  points: number;
+  opponentPoints: number;
+  margin: number;
+}
+
+/** This roster's narrowest win — the smallest winning margin among every match it's actually
+ * won. null until it has at least one win (a near-loss doesn't count; this is about scraping
+ * a win, not almost getting one). */
+export function getClosestWin(rosterId: number): NearlyEntry | null {
+  const wins = getTeamMatchHistory(rosterId).filter(
+    (m): m is TeamMatchResult & { opponentRosterId: number; opponentName: string; opponentPoints: number } =>
+      m.result === "W" && !m.isBye && m.opponentRosterId !== null && m.opponentPoints !== null
+  );
+  if (wins.length === 0) return null;
+
+  const closest = [...wins].sort(
+    (a, b) => a.points - a.opponentPoints - (b.points - b.opponentPoints)
+  )[0];
+
+  return {
+    season: closest.season,
+    week: closest.week,
+    opponentRosterId: closest.opponentRosterId,
+    opponentName: closest.opponentName,
+    points: closest.points,
+    opponentPoints: closest.opponentPoints,
+    margin: closest.points - closest.opponentPoints,
+  };
+}
