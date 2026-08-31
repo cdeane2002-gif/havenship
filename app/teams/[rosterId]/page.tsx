@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import {
   LEAGUE_ID,
@@ -11,9 +12,15 @@ import {
   rosterStreak,
   teamNameForUser,
 } from "@/lib/sleeper";
-import { getTeamMatchHistory } from "@/lib/team-profile";
+import {
+  getArchenemy,
+  getFavouriteOpponent,
+  getLeastFavouriteOpponent,
+  getTeamMatchHistory,
+} from "@/lib/team-profile";
 import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
 import { PlayerLink } from "@/components/PlayerLink";
+import { ClaimTeamButton } from "@/components/ClaimTeamButton";
 import { rankColorClass } from "@/lib/theme";
 
 function resultBadge(result: "W" | "L" | "T" | null) {
@@ -69,6 +76,10 @@ export default async function TeamProfilePage({
   const playerIds = roster.players ?? [];
   const dict = await buildPlayerDictionaryWithFallback(LEAGUE_ID, playerIds);
 
+  const favouriteOpponent = getFavouriteOpponent(rosterId);
+  const leastFavouriteOpponent = getLeastFavouriteOpponent(rosterId);
+  const archenemy = getArchenemy(rosterId);
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
       <BackButton fallbackHref="/" label="← Back to Standings" />
@@ -91,6 +102,7 @@ export default async function TeamProfilePage({
             #{standingsRank} in standings
           </p>
           <h1 className="text-xl font-bold text-fg-primary sm:text-2xl">{name}</h1>
+          <ClaimTeamButton rosterId={rosterId} />
         </div>
       </header>
 
@@ -113,6 +125,70 @@ export default async function TeamProfilePage({
           <p className="text-xs uppercase tracking-wide text-fg-muted">Points Against</p>
           <p className="mt-1 font-mono text-lg font-bold text-fg-primary">{pointsAgainst.toFixed(2)}</p>
         </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-fg-primary">Rivalries</h2>
+        {!favouriteOpponent && !leastFavouriteOpponent && !archenemy ? (
+          <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
+            No captured matches yet — rivalries build up as gameweeks are played.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Favourite Opponent</p>
+              {favouriteOpponent ? (
+                <>
+                  <Link
+                    href={`/teams/${favouriteOpponent.opponentRosterId}`}
+                    className="mt-1 block truncate font-semibold text-win hover:underline"
+                  >
+                    {favouriteOpponent.opponentName}
+                  </Link>
+                  <p className="text-xs text-fg-muted">
+                    {favouriteOpponent.wins}-{favouriteOpponent.losses}-{favouriteOpponent.ties}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Least Favourite Opponent</p>
+              {leastFavouriteOpponent ? (
+                <>
+                  <Link
+                    href={`/teams/${leastFavouriteOpponent.opponentRosterId}`}
+                    className="mt-1 block truncate font-semibold text-loss hover:underline"
+                  >
+                    {leastFavouriteOpponent.opponentName}
+                  </Link>
+                  <p className="text-xs text-fg-muted">
+                    {leastFavouriteOpponent.wins}-{leastFavouriteOpponent.losses}-
+                    {leastFavouriteOpponent.ties}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Archenemy</p>
+              {archenemy ? (
+                <>
+                  <PlayerLink
+                    playerId={archenemy.playerId}
+                    name={archenemy.playerName}
+                    className="mt-1 font-semibold text-fg-primary"
+                  />
+                  <p className="text-xs text-fg-muted">{archenemy.points.toFixed(2)} pts against you</p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="mb-8">
