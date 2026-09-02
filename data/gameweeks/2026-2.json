@@ -2,7 +2,7 @@
   "league_id": "1389372609086382080",
   "season": "2026",
   "week": 2,
-  "captured_at": "2026-09-01T11:02:45.707Z",
+  "captured_at": "2026-09-02T10:34:25.619Z",
   "matchups": [
     {
       "matchup_id": 1,
@@ -442,13 +442,13 @@
         {
           "roster_id": 7,
           "manager_name": "Patrickchess",
-          "points": 80.75,
+          "points": 83.25,
           "starters": [
             {
               "player_id": "3778",
               "name": "Iliman Ndiaye",
               "position": "F",
-              "club": "EVE",
+              "club": "MCI",
               "points": 7
             },
             {
@@ -616,7 +616,7 @@
         {
           "roster_id": 10,
           "manager_name": "SeanMyers",
-          "points": 85.25,
+          "points": 86.25,
           "starters": [
             {
               "player_id": "11576",
