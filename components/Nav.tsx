@@ -23,7 +23,9 @@ export default function Nav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-surface-border bg-surface-page/95 backdrop-blur supports-[backdrop-filter]:bg-surface-page/80 sm:sticky sm:top-0 sm:bottom-auto sm:border-t-0 sm:border-b">
-      <ul className="flex items-stretch overflow-x-auto sm:mx-auto sm:max-w-4xl sm:justify-center sm:px-6">
+      <ul
+        className="flex items-stretch overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] sm:mx-auto sm:max-w-4xl sm:justify-center sm:overflow-visible sm:px-6"
+      >
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           return (
@@ -42,6 +44,9 @@ export default function Nav() {
           );
         })}
       </ul>
+      {/* Visual hint that there's more to scroll to on mobile — the fixed-position + touch
+          horizontal scroll combo is easy to miss without one. */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-surface-page to-transparent sm:hidden" />
     </nav>
   );
 }

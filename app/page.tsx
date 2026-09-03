@@ -202,7 +202,7 @@ export default async function StandingsPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-surface-border">
+      <div className="overflow-x-auto overscroll-x-contain rounded-lg border border-surface-border [-webkit-overflow-scrolling:touch]">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">

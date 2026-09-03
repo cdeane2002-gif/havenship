@@ -48,7 +48,7 @@ export function FeaturedWeekStrip({
         </p>
       )}
 
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+      <div className="mb-4 flex gap-2 overflow-x-auto overscroll-x-contain pb-1 [-webkit-overflow-scrolling:touch]">
         {ordered.map((m) => {
           const [a, b] = m.teams;
           const isMine =

@@ -135,7 +135,7 @@ export default async function DraftPage() {
       </header>
 
       <h2 className="mb-3 text-lg font-semibold text-fg-primary">Board</h2>
-      <div className="overflow-x-auto rounded-lg border border-surface-border">
+      <div className="overflow-x-auto overscroll-x-contain rounded-lg border border-surface-border [-webkit-overflow-scrolling:touch]">
         <div className="inline-block min-w-full">
           {/* Header row: team names per slot */}
           <div className="flex border-b border-surface-border bg-surface-row">
