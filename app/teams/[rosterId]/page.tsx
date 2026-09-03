@@ -14,11 +14,13 @@ import {
 } from "@/lib/sleeper";
 import {
   getArchenemy,
+  getBestWeek,
   getClosestWin,
   getFavouriteOpponent,
   getHero,
   getLeastFavouriteOpponent,
   getTeamMatchHistory,
+  getWorstWeek,
 } from "@/lib/team-profile";
 import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
 import { PlayerLink } from "@/components/PlayerLink";
@@ -83,6 +85,8 @@ export default async function TeamProfilePage({
   const archenemy = getArchenemy(rosterId);
   const hero = getHero(rosterId);
   const nearly = getClosestWin(rosterId);
+  const bestWeek = getBestWeek(rosterId);
+  const worstWeek = getWorstWeek(rosterId);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
@@ -133,7 +137,7 @@ export default async function TeamProfilePage({
 
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold text-fg-primary">Showcase</h2>
-        {!hero && !nearly ? (
+        {!hero && !nearly && !bestWeek && !worstWeek ? (
           <div className="rounded-lg border border-surface-border bg-surface-card px-4 py-3 text-sm text-fg-secondary">
             No captured matches yet — highlights build up as gameweeks are played.
           </div>
@@ -169,6 +173,34 @@ export default async function TeamProfilePage({
                   <p className="text-xs text-fg-muted">
                     Won by {nearly.margin.toFixed(2)} ({nearly.points.toFixed(2)}–
                     {nearly.opponentPoints.toFixed(2)}) · GW{nearly.week}, {nearly.season}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Best Week</p>
+              {bestWeek ? (
+                <>
+                  <p className="mt-1 font-semibold text-win">{bestWeek.points.toFixed(2)} pts</p>
+                  <p className="text-xs text-fg-muted">
+                    GW{bestWeek.week}, {bestWeek.season}
+                    {bestWeek.isBye ? " · Bye week" : ` · vs ${bestWeek.opponentName}`}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1 text-sm text-fg-muted">—</p>
+              )}
+            </div>
+            <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+              <p className="text-xs uppercase tracking-wide text-fg-muted">Worst Week</p>
+              {worstWeek ? (
+                <>
+                  <p className="mt-1 font-semibold text-loss">{worstWeek.points.toFixed(2)} pts</p>
+                  <p className="text-xs text-fg-muted">
+                    GW{worstWeek.week}, {worstWeek.season}
+                    {worstWeek.isBye ? " · Bye week" : ` · vs ${worstWeek.opponentName}`}
                   </p>
                 </>
               ) : (

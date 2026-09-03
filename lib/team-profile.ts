@@ -210,3 +210,40 @@ export function getClosestWin(rosterId: number): NearlyEntry | null {
     margin: closest.points - closest.opponentPoints,
   };
 }
+
+export interface WeekEntry {
+  season: string;
+  week: number;
+  points: number;
+  opponentName: string | null;
+  isBye: boolean;
+}
+
+function toWeekEntry(match: TeamMatchResult): WeekEntry {
+  return {
+    season: match.season,
+    week: match.week,
+    points: match.points,
+    opponentName: match.opponentName,
+    isBye: match.isBye,
+  };
+}
+
+/** This roster's highest team total in a single captured gameweek, ever. null with no
+ * captured matches yet. */
+export function getBestWeek(rosterId: number): WeekEntry | null {
+  const history = getTeamMatchHistory(rosterId);
+  if (history.length === 0) return null;
+  return toWeekEntry([...history].sort((a, b) => b.points - a.points)[0]);
+}
+
+/** This roster's lowest team total in a single captured gameweek, ever. Excludes an exact
+ * 0.00 — in practice a real played gameweek is never a literal zero (some starter always
+ * accrues a fractional stat), so a 0.00 here means the gameweek hasn't actually been played
+ * yet rather than a genuinely disastrous week (e.g. a future week captured/fetched before its
+ * fixtures kick off). null with no qualifying weeks yet. */
+export function getWorstWeek(rosterId: number): WeekEntry | null {
+  const played = getTeamMatchHistory(rosterId).filter((m) => m.points > 0);
+  if (played.length === 0) return null;
+  return toWeekEntry([...played].sort((a, b) => a.points - b.points)[0]);
+}
