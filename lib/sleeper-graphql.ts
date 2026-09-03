@@ -55,12 +55,22 @@ function getAuthToken(): string {
   return token;
 }
 
-async function graphqlRequest<T>(query: string, variables: Record<string, unknown>): Promise<T> {
+async function graphqlRequest<T>(
+  query: string,
+  variables: Record<string, unknown>,
+  // Every caller here defaults to no caching (matchup/score data must be fresh) — pass this
+  // only for genuinely stable lookups like getPlayerBySport, where re-fetching identity info
+  // on every request is pure waste (and, on a force-dynamic page, adds real latency: an
+  // explicit next.revalidate is one of the few things that overrides force-dynamic's default
+  // no-store on a per-fetch basis).
+  revalidateSeconds?: number
+): Promise<T> {
   const token = getAuthToken();
   const res = await fetch(GRAPHQL_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: token },
     body: JSON.stringify({ query, variables }),
+    ...(revalidateSeconds !== undefined ? { next: { revalidate: revalidateSeconds } } : {}),
   });
 
   if (!res.ok) {
@@ -83,6 +93,59 @@ async function graphqlRequest<T>(query: string, variables: Record<string, unknow
   }
 
   return body.data;
+}
+
+const GET_PLAYER_QUERY = `
+  query($sport: String!, $player_id: String!) {
+    get_player(sport: $sport, player_id: $player_id) {
+      first_name
+      last_name
+      position
+      team_abbr
+    }
+  }
+`;
+
+interface RawSportPlayer {
+  first_name: string;
+  last_name: string;
+  position: string;
+  team_abbr: string;
+}
+
+export interface SportPlayerInfo {
+  name: string;
+  position: string;
+  club: string;
+}
+
+/**
+ * Sport-scoped single-player lookup. Unlike Sleeper's public REST /players/clubsoccer
+ * dictionary — which mixes multiple sports into one flat numeric ID space and produces real
+ * collisions (player_id 1206 resolves to an MLS club stub "Roma/Lazio" there, but to Harry
+ * Maguire here, scoped to clubsoccer:epl) — this is reliable for any player, drafted or not,
+ * as long as they exist in Sleeper's system at all. Used as a last-resort per-player fallback
+ * for someone who's never started in a captured gameweek (so isn't in the local starters-based
+ * dictionary either) — typically a very recent waiver/free-agent pickup. Returns null on a
+ * missing/expired auth token or an unresolvable id, never throws for those cases.
+ */
+export async function getPlayerBySport(playerId: string): Promise<SportPlayerInfo | null> {
+  try {
+    const data = await graphqlRequest<{ get_player: RawSportPlayer | null }>(
+      GET_PLAYER_QUERY,
+      { sport: "clubsoccer:epl", player_id: playerId },
+      3600 // identity is stable — no reason to re-fetch on every request
+    );
+    if (!data.get_player) return null;
+    const { first_name, last_name, position, team_abbr } = data.get_player;
+    return { name: `${first_name} ${last_name}`.trim(), position, club: team_abbr };
+  } catch (err) {
+    if (err instanceof SleeperAuthError) {
+      console.error(err.message);
+      return null;
+    }
+    throw err;
+  }
 }
 
 const MATCHUP_LEGS_QUERY = `

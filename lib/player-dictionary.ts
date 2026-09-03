@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { getDraftPicks, getLeagueSeasonChain } from "./sleeper";
+import { getPlayerBySport } from "./sleeper-graphql";
+import { getAllSeasons, getAllGameweekData } from "./gameweek";
 
 export interface PlayerInfo {
   name: string;
@@ -59,16 +61,65 @@ export async function buildPlayerDictionary(leagueId: string): Promise<Map<strin
 }
 
 /**
- * Like buildPlayerDictionary, but also resolves player_ids not covered by any draft pick
- * using the local data/players.json fallback. Only use where broader coverage matters (e.g.
- * the Transfers page), not on every page.
+ * Every player_id that has ever started in a captured gameweek, with the name/position/club
+ * Sleeper's own authenticated player_map reported at capture time (see gameweek-builder.ts) —
+ * unaffected by the public dictionary's ID collisions since it comes from a different,
+ * sport-scoped source. Covers anyone who's actually played, drafted or not, as soon as
+ * they've started at least once. Free to build — reads already-committed local files, no
+ * network call.
+ */
+function buildDictionaryFromCapturedStarters(): Map<string, PlayerInfo> {
+  const dict = new Map<string, PlayerInfo>();
+  for (const season of getAllSeasons()) {
+    for (const gw of getAllGameweekData(season)) {
+      for (const matchup of gw.matchups) {
+        for (const team of matchup.teams) {
+          for (const starter of team.starters) {
+            dict.set(starter.player_id, {
+              name: starter.name,
+              position: starter.position,
+              club: starter.club,
+            });
+          }
+        }
+      }
+    }
+  }
+  return dict;
+}
+
+/**
+ * Like buildPlayerDictionary, but also resolves player_ids not covered by any draft pick.
+ * Layered fallback, cheapest/most reliable first: captured gameweek starters (free, and
+ * immune to the public dictionary's ID collisions — see sleeper-graphql.ts's getPlayerBySport)
+ * → a live sport-scoped GraphQL lookup per still-missing id (handles a very recent
+ * waiver/free-agent pickup who's never started yet) → the local, pre-filtered copy of
+ * Sleeper's public dictionary as a last resort if the auth token is unavailable. Only use
+ * where broader coverage matters (e.g. the Transfers page), not on every page.
  */
 export async function buildPlayerDictionaryWithFallback(
   leagueId: string,
   unresolvedIds: string[]
 ): Promise<Map<string, PlayerInfo>> {
   const dict = await buildPlayerDictionary(leagueId);
-  const stillMissing = unresolvedIds.filter((id) => !dict.has(id));
+  let stillMissing = unresolvedIds.filter((id) => !dict.has(id));
+  if (stillMissing.length === 0) return dict;
+
+  const capturedDict = buildDictionaryFromCapturedStarters();
+  for (const id of stillMissing) {
+    const entry = capturedDict.get(id);
+    if (entry) dict.set(id, entry);
+  }
+  stillMissing = stillMissing.filter((id) => !dict.has(id));
+  if (stillMissing.length === 0) return dict;
+
+  const sportLookups = await Promise.all(
+    stillMissing.map(async (id) => [id, await getPlayerBySport(id)] as const)
+  );
+  for (const [id, info] of sportLookups) {
+    if (info) dict.set(id, info);
+  }
+  stillMissing = stillMissing.filter((id) => !dict.has(id));
   if (stillMissing.length === 0) return dict;
 
   const localDict = readLocalPlayerDictionary();
