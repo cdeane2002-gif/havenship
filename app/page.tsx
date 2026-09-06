@@ -17,11 +17,12 @@ import { resolveBracket, type ResolvedBracketMatch } from "@/lib/playoff-bracket
 import { getAvailableWeeks, getGameweekData } from "@/lib/gameweek";
 import { getLiveGameweekData } from "@/lib/gameweek-live";
 import { getRoundFixtures } from "@/lib/next-fixture";
-import { buildWeeklyHeadlines } from "@/lib/headlines";
+import { getStandingsThroughWeek, type HistoricalStandingsRow } from "@/lib/standings-history";
+import { buildWeeklyHeadlines, type Headline } from "@/lib/headlines";
 import { recentForm } from "@/lib/theme";
 import { StandingsRow } from "@/components/StandingsRow";
 import { FeaturedWeekStrip } from "@/components/FeaturedWeekStrip";
-import type { GameweekFile } from "@/lib/gameweek-schemas";
+import type { GameweekFile, GameweekMatchup } from "@/lib/gameweek-schemas";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
 
 // Unlike Results/Best XI (forced dynamic automatically by reading searchParams), this page has
@@ -32,7 +33,7 @@ import type { SleeperRoster, SleeperUser } from "@/lib/types";
 // next dev already does — traffic is tiny (~12 users), so hitting Sleeper fresh every load costs nothing.
 export const dynamic = "force-dynamic";
 
-interface StandingsRowData {
+interface LiveStandingsRowData {
   roster: SleeperRoster;
   user: SleeperUser | null;
   wins: number;
@@ -42,10 +43,10 @@ interface StandingsRowData {
   pointsAgainst: number;
 }
 
-function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): StandingsRowData[] {
+function buildLiveStandings(rosters: SleeperRoster[], users: SleeperUser[]): LiveStandingsRowData[] {
   const usersById = new Map(users.map((u) => [u.user_id, u]));
 
-  const rows: StandingsRowData[] = rosters.map((roster) => {
+  const rows: LiveStandingsRowData[] = rosters.map((roster) => {
     const { wins, losses, ties } = rosterRecord(roster);
     return {
       roster,
@@ -67,7 +68,143 @@ function buildStandings(rosters: SleeperRoster[], users: SleeperUser[]): Standin
   return rows;
 }
 
-export default async function StandingsPage() {
+function WeekToggle({
+  capturedWeeks,
+  selectedWeek,
+}: {
+  capturedWeeks: number[];
+  selectedWeek: number | null;
+}) {
+  if (capturedWeeks.length === 0) return null;
+  return (
+    <div className="mb-6 flex flex-wrap gap-1.5">
+      <Link
+        href="/"
+        className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+          selectedWeek === null
+            ? "bg-page-standings/20 text-page-standings"
+            : "bg-surface-row text-fg-secondary hover:bg-surface-border"
+        }`}
+      >
+        Live
+      </Link>
+      {capturedWeeks.map((w) => (
+        <a
+          key={w}
+          href={`/?week=${w}`}
+          className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+            selectedWeek === w
+              ? "bg-page-standings/20 text-page-standings"
+              : "bg-surface-row text-fg-secondary hover:bg-surface-border"
+          }`}
+        >
+          GW{w}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function InsightsGrid({ headlines }: { headlines: Headline[] }) {
+  if (headlines.length === 0) return null;
+  return (
+    <div className="mb-8 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+      {headlines.map((h) => (
+        <div
+          key={h.label}
+          className="rounded-lg border border-surface-border bg-surface-card px-3 py-2 text-xs"
+        >
+          <span className="font-semibold uppercase tracking-wide text-fg-muted">{h.label}: </span>
+          {h.href ? (
+            <Link href={h.href} className="text-fg-secondary hover:underline">
+              {h.text}
+            </Link>
+          ) : (
+            <span className="text-fg-secondary">{h.text}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StandingsTable({
+  rows,
+  playoffCutoff,
+}: {
+  rows: {
+    rosterId: number;
+    name: string;
+    avatarUrl: string | null;
+    wins: number;
+    losses: number;
+    ties: number;
+    pointsFor: number;
+    pointsAgainst: number;
+    form: ("W" | "L" | "T")[];
+  }[];
+  playoffCutoff: number;
+}) {
+  return (
+    <>
+      <div className="overflow-x-auto overscroll-x-contain rounded-lg border border-surface-border [-webkit-overflow-scrolling:touch]">
+        <table className="w-full min-w-[640px] text-sm">
+          <thead>
+            <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
+              <th className="px-3 py-2 font-medium">#</th>
+              <th className="px-3 py-2 font-medium">Team</th>
+              <th className="px-3 py-2 text-center font-medium">W-L-D</th>
+              <th className="px-3 py-2 text-right font-medium">PF</th>
+              <th className="px-3 py-2 text-right font-medium">PA</th>
+              <th className="px-3 py-2 text-right font-medium">Diff</th>
+              <th className="px-3 py-2 text-right font-medium">Avg</th>
+              <th className="px-3 py-2 text-right font-medium">Form</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => {
+              const rank = i + 1;
+              return (
+                <Fragment key={row.rosterId}>
+                  <StandingsRow
+                    rosterId={row.rosterId}
+                    rank={rank}
+                    name={row.name}
+                    avatarUrl={row.avatarUrl}
+                    wins={row.wins}
+                    losses={row.losses}
+                    ties={row.ties}
+                    pointsFor={row.pointsFor}
+                    pointsAgainst={row.pointsAgainst}
+                    form={row.form}
+                  />
+                  {rank === playoffCutoff && rank < rows.length && (
+                    <tr aria-hidden>
+                      <td colSpan={8} className="border-b-2 border-dashed border-page-standings/60 p-0">
+                        <span className="sr-only">Playoff cutoff</span>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {playoffCutoff > 0 && playoffCutoff < rows.length && (
+        <p className="mt-2 text-xs text-fg-muted">
+          Dashed line marks the playoff cutoff — top {playoffCutoff} qualify.
+        </p>
+      )}
+    </>
+  );
+}
+
+export default async function StandingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const [league, rosters, users] = await Promise.all([
     getLeague(LEAGUE_ID),
     getRosters(LEAGUE_ID),
@@ -82,7 +219,76 @@ export default async function StandingsPage() {
     );
   }
 
-  const rows = buildStandings(rosters, users);
+  // The week-to-week toggle only ever browses committed snapshots — a still-in-progress week
+  // has no "standings as of" reconstruction to show, only the existing Live view does.
+  const capturedWeeks = getAvailableWeeks(league.season);
+  const params = await searchParams;
+  const requestedWeek = Array.isArray(params.week) ? params.week[0] : params.week;
+  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
+  const selectedWeek = capturedWeeks.includes(parsedWeek) ? parsedWeek : null;
+
+  const playoffCutoff = league.settings.playoff_teams;
+
+  if (selectedWeek !== null) {
+    const gameweek = getGameweekData(league.season, selectedWeek);
+    const headlines = gameweek ? buildWeeklyHeadlines(gameweek) : [];
+    const historicalRows: HistoricalStandingsRow[] = getStandingsThroughWeek(
+      league.season,
+      selectedWeek,
+      rosters,
+      users
+    );
+    const matchups: GameweekMatchup[] = gameweek?.matchups ?? [];
+
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
+        <header className="mb-6 border-b-2 border-page-standings pb-3">
+          <p className="text-sm font-medium text-page-standings">{league.season} Season</p>
+          <h1 className="text-2xl font-bold tracking-tight text-fg-primary sm:text-3xl">
+            {league.name}
+          </h1>
+        </header>
+
+        <WeekToggle capturedWeeks={capturedWeeks} selectedWeek={selectedWeek} />
+
+        {matchups.length > 0 && (
+          <section className="mb-8">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold text-fg-primary">GW{selectedWeek} Results</h2>
+              <a
+                href={`/results?season=${league.season}&week=${selectedWeek}`}
+                className="text-sm text-fg-secondary hover:text-fg-primary"
+              >
+                Full results →
+              </a>
+            </div>
+            <FeaturedWeekStrip matchups={matchups} nextWeek={null} nextFixtures={[]} />
+            <InsightsGrid headlines={headlines} />
+          </section>
+        )}
+
+        <h2 className="mb-3 text-lg font-semibold text-fg-primary">
+          Standings through GW{selectedWeek}
+        </h2>
+        <StandingsTable
+          rows={historicalRows.map((r) => ({
+            rosterId: r.rosterId,
+            name: r.name,
+            avatarUrl: r.avatarUrl,
+            wins: r.wins,
+            losses: r.losses,
+            ties: r.ties,
+            pointsFor: r.pointsFor,
+            pointsAgainst: r.pointsAgainst,
+            form: r.form,
+          }))}
+          playoffCutoff={playoffCutoff}
+        />
+      </div>
+    );
+  }
+
+  const rows = buildLiveStandings(rosters, users);
   const seasonHasStarted = rows.some((r) => r.wins > 0 || r.losses > 0 || r.ties > 0);
   const isDrafting = league.status === "drafting";
   const currentPickNo = league.metadata?.current_pick_no;
@@ -109,7 +315,6 @@ export default async function StandingsPage() {
   // uses, so the homepage and Results page never disagree about what "this week" means.
   const state = await getSeasonState();
   const currentWeek = state?.week ?? null;
-  const capturedWeeks = getAvailableWeeks(league.season);
   const availableWeeks = Array.from(
     new Set(currentWeek ? [...capturedWeeks, currentWeek] : capturedWeeks)
   ).sort((a, b) => a - b);
@@ -127,8 +332,6 @@ export default async function StandingsPage() {
   const nextWeek = featuredWeek !== null ? featuredWeek + 1 : null;
   const nextFixtures = nextWeek !== null ? await getRoundFixtures(nextWeek) : [];
 
-  const playoffCutoff = league.settings.playoff_teams;
-
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
       <header className="mb-6 border-b-2 border-page-standings pb-3">
@@ -137,6 +340,8 @@ export default async function StandingsPage() {
           {league.name}
         </h1>
       </header>
+
+      <WeekToggle capturedWeeks={capturedWeeks} selectedWeek={null} />
 
       {featuredGameweek && featuredGameweek.matchups.length > 0 && (
         <section className="mb-8">
@@ -164,27 +369,7 @@ export default async function StandingsPage() {
             nextFixtures={nextFixtures}
           />
 
-          {headlines.length > 0 && (
-            <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-              {headlines.map((h) => (
-                <div
-                  key={h.label}
-                  className="rounded-lg border border-surface-border bg-surface-card px-3 py-2 text-xs"
-                >
-                  <span className="font-semibold uppercase tracking-wide text-fg-muted">
-                    {h.label}:{" "}
-                  </span>
-                  {h.href ? (
-                    <Link href={h.href} className="text-fg-secondary hover:underline">
-                      {h.text}
-                    </Link>
-                  ) : (
-                    <span className="text-fg-secondary">{h.text}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <InsightsGrid headlines={headlines} />
         </section>
       )}
 
@@ -202,57 +387,20 @@ export default async function StandingsPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto overscroll-x-contain rounded-lg border border-surface-border [-webkit-overflow-scrolling:touch]">
-        <table className="w-full min-w-[640px] text-sm">
-          <thead>
-            <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
-              <th className="px-3 py-2 font-medium">#</th>
-              <th className="px-3 py-2 font-medium">Team</th>
-              <th className="px-3 py-2 text-center font-medium">W-L-D</th>
-              <th className="px-3 py-2 text-right font-medium">PF</th>
-              <th className="px-3 py-2 text-right font-medium">PA</th>
-              <th className="px-3 py-2 text-right font-medium">Diff</th>
-              <th className="px-3 py-2 text-right font-medium">Avg</th>
-              <th className="px-3 py-2 text-right font-medium">Form</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => {
-              const rank = i + 1;
-              const name = row.user ? teamNameForUser(row.user) : `Roster ${row.roster.roster_id}`;
-              const avatarUrl = row.user ? avatarUrlForUser(row.user) : null;
-              return (
-                <Fragment key={row.roster.roster_id}>
-                  <StandingsRow
-                    rosterId={row.roster.roster_id}
-                    rank={rank}
-                    name={name}
-                    avatarUrl={avatarUrl}
-                    wins={row.wins}
-                    losses={row.losses}
-                    ties={row.ties}
-                    pointsFor={row.pointsFor}
-                    pointsAgainst={row.pointsAgainst}
-                    form={recentForm(row.roster.metadata?.record)}
-                  />
-                  {rank === playoffCutoff && rank < rows.length && (
-                    <tr aria-hidden>
-                      <td colSpan={8} className="border-b-2 border-dashed border-page-standings/60 p-0">
-                        <span className="sr-only">Playoff cutoff</span>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {playoffCutoff > 0 && playoffCutoff < rows.length && (
-        <p className="mt-2 text-xs text-fg-muted">
-          Dashed line marks the playoff cutoff — top {playoffCutoff} qualify.
-        </p>
-      )}
+      <StandingsTable
+        rows={rows.map((row) => ({
+          rosterId: row.roster.roster_id,
+          name: row.user ? teamNameForUser(row.user) : `Roster ${row.roster.roster_id}`,
+          avatarUrl: row.user ? avatarUrlForUser(row.user) : null,
+          wins: row.wins,
+          losses: row.losses,
+          ties: row.ties,
+          pointsFor: row.pointsFor,
+          pointsAgainst: row.pointsAgainst,
+          form: recentForm(row.roster.metadata?.record),
+        }))}
+        playoffCutoff={playoffCutoff}
+      />
 
       {bracket.length > 0 && (
         <section className="mt-8">
