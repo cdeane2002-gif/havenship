@@ -442,7 +442,7 @@
         {
           "roster_id": 3,
           "manager_name": "cilliandeane",
-          "points": 98,
+          "points": 109.25,
           "starters": [
             {
               "player_id": "1957",
@@ -508,11 +508,11 @@
               "points": 15.5
             },
             {
-              "player_id": "1114",
-              "name": "John McGinn",
-              "position": "M",
-              "club": "AVL",
-              "points": 0
+              "player_id": "4884",
+              "name": "Nordi Mukiele",
+              "position": "D",
+              "club": "SUN",
+              "points": 11.25
             },
             {
               "player_id": "1786",

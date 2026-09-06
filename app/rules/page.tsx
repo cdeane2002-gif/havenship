@@ -71,6 +71,53 @@ export default async function RulesPage() {
         </div>
       </section>
 
+      {/* House rules — custom to this league, not part of Sleeper's own settings/scoring */}
+      <section className="mb-8">
+        <h2 className="mb-1 text-lg font-semibold text-fg-primary">House Rules</h2>
+        <p className="mb-3 text-sm text-fg-secondary">
+          On top of Sleeper&apos;s own scoring below — tracked by hand, not enforced by Sleeper.
+        </p>
+        <div className="space-y-3">
+          <div className="rounded-lg border border-surface-border bg-surface-card p-4">
+            <p className="font-semibold text-fg-primary">Bonus &amp; Penalty Points</p>
+            <ul className="mt-2 space-y-1.5 text-sm text-fg-secondary">
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 shrink-0 font-mono font-semibold text-win">+100</span>
+                <span>A player who scores a goal <em>and</em> receives a red card in the same match.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 shrink-0 font-mono font-semibold text-loss">−100</span>
+                <span>A player who scores a hat-trick, but their team still loses the fantasy matchup that week.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="rounded-lg border border-surface-border bg-surface-card p-4">
+            <p className="font-semibold text-fg-primary">Time Machine Chip</p>
+            <p className="mt-2 text-sm text-fg-secondary">
+              Each manager may retroactively swap one of their own already-played starters for
+              a different player&apos;s actual score that same gameweek — twice per season: once
+              any time before GW19, and once any time after. See each team&apos;s profile page
+              for who&apos;s used theirs.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-surface-border bg-surface-card p-4">
+            <p className="font-semibold text-fg-primary">Buy-In &amp; Stakes</p>
+            <p className="mt-2 text-sm text-fg-secondary">
+              Every manager pays a <strong className="text-fg-primary">€20 buy-in</strong>,
+              paid out in full to the playoff champion.
+            </p>
+            <p className="mt-2 text-sm text-fg-secondary">
+              Last place takes on the{" "}
+              <strong className="text-fg-primary">&quot;Not-So-Fun Run&quot;</strong>: a 5km
+              run, stopping at every 1km marker to eat a Big Mac and drink a 500ml can of beer
+              before continuing.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* League settings */}
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold text-fg-primary">League Settings</h2>

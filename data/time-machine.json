@@ -1,0 +1,14 @@
+{
+  "3": {
+    "before19": {
+      "used": true,
+      "season": "2026",
+      "week": 3,
+      "swappedOutPlayer": "John McGinn",
+      "swappedInPlayer": "Nordi Mukiele"
+    },
+    "after19": {
+      "used": false
+    }
+  }
+}

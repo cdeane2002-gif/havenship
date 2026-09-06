@@ -23,9 +23,33 @@ import {
   getWorstWeek,
 } from "@/lib/team-profile";
 import { buildPlayerDictionaryWithFallback } from "@/lib/player-dictionary";
+import { getTimeMachineStatus, type TimeMachineUse } from "@/lib/time-machine";
 import { PlayerLink } from "@/components/PlayerLink";
 import { ClaimTeamButton } from "@/components/ClaimTeamButton";
 import { rankColorClass } from "@/lib/theme";
+
+function timeMachineBadge(label: string, use: TimeMachineUse) {
+  return (
+    <div className="rounded-lg border border-surface-border bg-surface-card p-3">
+      <p className="text-xs uppercase tracking-wide text-fg-muted">{label}</p>
+      {use.used ? (
+        <>
+          <p className="mt-1 font-semibold text-page-rules">Used</p>
+          {use.week !== undefined && (
+            <p className="text-xs text-fg-muted">
+              GW{use.week}, {use.season}
+              {use.swappedOutPlayer && use.swappedInPlayer
+                ? ` · brought in ${use.swappedInPlayer} for ${use.swappedOutPlayer}`
+                : ""}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="mt-1 font-semibold text-fg-secondary">Available</p>
+      )}
+    </div>
+  );
+}
 
 function resultBadge(result: "W" | "L" | "T" | null) {
   if (!result) return null;
@@ -87,6 +111,7 @@ export default async function TeamProfilePage({
   const nearly = getClosestWin(rosterId);
   const bestWeek = getBestWeek(rosterId);
   const worstWeek = getWorstWeek(rosterId);
+  const timeMachine = getTimeMachineStatus(rosterId);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
@@ -132,6 +157,17 @@ export default async function TeamProfilePage({
         <div className="rounded-lg border border-surface-border bg-surface-card p-3">
           <p className="text-xs uppercase tracking-wide text-fg-muted">Points Against</p>
           <p className="mt-1 font-mono text-lg font-bold text-fg-primary">{pointsAgainst.toFixed(2)}</p>
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-1 text-lg font-semibold text-fg-primary">Time Machine</h2>
+        <p className="mb-3 text-sm text-fg-secondary">
+          One use before GW19, one use after — see Rules for details.
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {timeMachineBadge("Before GW19", timeMachine.before19)}
+          {timeMachineBadge("After GW19", timeMachine.after19)}
         </div>
       </section>
 
