@@ -26,8 +26,9 @@ import {
 } from "../lib/sleeper";
 import { getMatchupLegs } from "../lib/sleeper-graphql";
 import { buildMatchupsFromLegs } from "../lib/gameweek-builder";
-import { recordCapturedWeek } from "../lib/gameweek";
+import { getAvailableWeeks, recordCapturedWeek } from "../lib/gameweek";
 import { GameweekFileSchema } from "../lib/gameweek-schemas";
+import type { SleeperLeague } from "../lib/types";
 
 function parseWeekArg(): number | null {
   const arg = process.argv.find((a) => a.startsWith("--week="));
@@ -36,17 +37,7 @@ function parseWeekArg(): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-async function main() {
-  const league = await getLeague(LEAGUE_ID);
-  if (!league) throw new Error("Could not load league.");
-
-  let week = parseWeekArg();
-  if (week === null) {
-    const state = await getSeasonState();
-    if (!state) throw new Error("Could not load season state to auto-detect week.");
-    week = state.week - 1;
-    if (week < 1) throw new Error(`Auto-detected week ${week} is before the season started — nothing to capture yet.`);
-  }
+async function captureWeek(league: SleeperLeague, week: number): Promise<void> {
   console.log(`Capturing gameweek ${week} for ${league.season}...`);
 
   const [rosters, users, legs, weekStats] = await Promise.all([
@@ -89,6 +80,44 @@ async function main() {
 
   recordCapturedWeek(LEAGUE_ID, league.season, week);
   console.log(`Updated index.json`);
+}
+
+async function main() {
+  const league = await getLeague(LEAGUE_ID);
+  if (!league) throw new Error("Could not load league.");
+
+  const explicitWeek = parseWeekArg();
+  if (explicitWeek !== null) {
+    await captureWeek(league, explicitWeek);
+    return;
+  }
+
+  const state = await getSeasonState();
+  if (!state) throw new Error("Could not load season state to auto-detect week.");
+  const targetWeek = state.week - 1;
+  if (targetWeek < 1) {
+    throw new Error(`Auto-detected week ${targetWeek} is before the season started — nothing to capture yet.`);
+  }
+
+  // Backfill every uncaptured week up to the target, not just the single most recent one.
+  // The daily job only ever checks "current week - 1" — if Sleeper's season-state week
+  // counter ever advances by more than one between two scheduled runs (e.g. it sits on one
+  // value for several days, as happens when a gameweek's fixtures are staggered across
+  // rearranged dates, then jumps), a week in between would otherwise never get a second
+  // chance to be captured on any later run.
+  const captured = new Set(getAvailableWeeks(league.season));
+  const weeksToCapture = Array.from({ length: targetWeek }, (_, i) => i + 1).filter(
+    (w) => !captured.has(w)
+  );
+
+  if (weeksToCapture.length === 0) {
+    console.log(`Nothing to capture — already up to date through week ${targetWeek}.`);
+    return;
+  }
+
+  for (const week of weeksToCapture) {
+    await captureWeek(league, week);
+  }
 }
 
 main().catch((err) => {
