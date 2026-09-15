@@ -12,6 +12,13 @@ import {
 import { rankColorClass } from "@/lib/theme";
 import { PlayerLink } from "@/components/PlayerLink";
 
+// No dynamic API of its own, so this was statically prerendered with only a 1-hour ISR
+// window — same class of staleness bug already fixed on Standings/Transfers. Records
+// reads newly-captured gameweek data once a day; without this, a viewer can see last
+// week's leaderboard for up to an hour after the new data actually lands (worse if the
+// window hasn't been hit yet since the last redeploy). Force real per-request rendering.
+export const dynamic = "force-dynamic";
+
 export default async function RecordsPage() {
   const seasons = await getAllSeasonsData(LEAGUE_ID);
 
