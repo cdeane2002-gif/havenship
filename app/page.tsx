@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import {
   LEAGUE_ID,
@@ -20,7 +19,7 @@ import { getRoundFixtures } from "@/lib/next-fixture";
 import { getStandingsThroughWeek, type HistoricalStandingsRow } from "@/lib/standings-history";
 import { buildWeeklyHeadlines, type Headline } from "@/lib/headlines";
 import { recentForm } from "@/lib/theme";
-import { StandingsRow } from "@/components/StandingsRow";
+import { StandingsTable } from "@/components/StandingsTable";
 import { FeaturedWeekStrip } from "@/components/FeaturedWeekStrip";
 import type { GameweekFile, GameweekMatchup } from "@/lib/gameweek-schemas";
 import type { SleeperRoster, SleeperUser } from "@/lib/types";
@@ -125,78 +124,6 @@ function InsightsGrid({ headlines }: { headlines: Headline[] }) {
         </div>
       ))}
     </div>
-  );
-}
-
-function StandingsTable({
-  rows,
-  playoffCutoff,
-}: {
-  rows: {
-    rosterId: number;
-    name: string;
-    avatarUrl: string | null;
-    wins: number;
-    losses: number;
-    ties: number;
-    pointsFor: number;
-    pointsAgainst: number;
-    form: ("W" | "L" | "T")[];
-  }[];
-  playoffCutoff: number;
-}) {
-  return (
-    <>
-      <div className="overflow-x-auto overscroll-x-contain rounded-lg border border-surface-border [-webkit-overflow-scrolling:touch]">
-        <table className="w-full min-w-[640px] text-sm">
-          <thead>
-            <tr className="border-b border-surface-border bg-surface-row text-left text-xs uppercase tracking-wide text-fg-muted">
-              <th className="px-3 py-2 font-medium">#</th>
-              <th className="px-3 py-2 font-medium">Team</th>
-              <th className="px-3 py-2 text-center font-medium">W-L-D</th>
-              <th className="px-3 py-2 text-right font-medium">PF</th>
-              <th className="px-3 py-2 text-right font-medium">PA</th>
-              <th className="px-3 py-2 text-right font-medium">Diff</th>
-              <th className="px-3 py-2 text-right font-medium">Avg</th>
-              <th className="px-3 py-2 text-right font-medium">Form</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => {
-              const rank = i + 1;
-              return (
-                <Fragment key={row.rosterId}>
-                  <StandingsRow
-                    rosterId={row.rosterId}
-                    rank={rank}
-                    name={row.name}
-                    avatarUrl={row.avatarUrl}
-                    wins={row.wins}
-                    losses={row.losses}
-                    ties={row.ties}
-                    pointsFor={row.pointsFor}
-                    pointsAgainst={row.pointsAgainst}
-                    form={row.form}
-                  />
-                  {rank === playoffCutoff && rank < rows.length && (
-                    <tr aria-hidden>
-                      <td colSpan={8} className="border-b-2 border-dashed border-page-standings/60 p-0">
-                        <span className="sr-only">Playoff cutoff</span>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {playoffCutoff > 0 && playoffCutoff < rows.length && (
-        <p className="mt-2 text-xs text-fg-muted">
-          Dashed line marks the playoff cutoff — top {playoffCutoff} qualify.
-        </p>
-      )}
-    </>
   );
 }
 
