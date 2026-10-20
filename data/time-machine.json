@@ -22,5 +22,17 @@
     "after19": {
       "used": false
     }
+  },
+  "10": {
+    "before19": {
+      "used": true,
+      "season": "2026",
+      "week": 7,
+      "swappedOutPlayer": "Pascal Groß",
+      "swappedInPlayer": "Yasin Ayari"
+    },
+    "after19": {
+      "used": false
+    }
   }
 }

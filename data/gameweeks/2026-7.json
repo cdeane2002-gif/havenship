@@ -268,7 +268,7 @@
         {
           "roster_id": 10,
           "manager_name": "SeanMyers",
-          "points": 104,
+          "points": 116,
           "starters": [
             {
               "player_id": "1994",
@@ -292,11 +292,11 @@
               "points": 15
             },
             {
-              "player_id": "2051",
-              "name": "Pascal Groß",
+              "player_id": "3672",
+              "name": "Yasin Ayari",
               "position": "M",
               "club": "BHA",
-              "points": 2.5
+              "points": 14.5
             },
             {
               "player_id": "8744",
