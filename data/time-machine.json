@@ -34,5 +34,29 @@
     "after19": {
       "used": false
     }
+  },
+  "7": {
+    "before19": {
+      "used": true,
+      "season": "2026",
+      "week": 10,
+      "swappedOutPlayer": "Sandro Tonali",
+      "swappedInPlayer": "Dominik Szoboszlai"
+    },
+    "after19": {
+      "used": false
+    }
+  },
+  "2": {
+    "before19": {
+      "used": true,
+      "season": "2026",
+      "week": 10,
+      "swappedOutPlayer": "Harry Maguire",
+      "swappedInPlayer": "Patrick Dorgu"
+    },
+    "after19": {
+      "used": false
+    }
   }
 }
